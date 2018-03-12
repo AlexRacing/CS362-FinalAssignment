@@ -2,7 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class AdminControlPanel {
-    JFrame adminCtrFrame;
+    private JFrame adminCtrFrame;
     private JPanel primary, left, right, rightUpper, rightLower;
     private JTextArea treeView;
     private JTextField userID, groupID;

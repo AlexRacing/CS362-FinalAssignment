@@ -2,12 +2,12 @@ import java.awt.*;
 import javax.swing.*;
 
 public class UserView {
-    JFrame userViewFrame;
-    JPanel primary, top, middleTop, middleBottom, bottom;
-    JTextField userID;
-    JScrollPane tweetMessage_scroll, currentFollowing_scroll, newsFeed_scroll;
-    JTextArea tweetMessage, currentFollowing, newsFeed;
-    JButton followUser, postTweet;
+    private JFrame userViewFrame;
+    private JPanel primary, top, middleTop, middleBottom, bottom;
+    private JTextField userID;
+    private JScrollPane tweetMessage_scroll, currentFollowing_scroll, newsFeed_scroll;
+    private JTextArea tweetMessage, currentFollowing, newsFeed;
+    private JButton followUser, postTweet;
     
     public UserView() {
         userViewFrame = new JFrame("User View");
