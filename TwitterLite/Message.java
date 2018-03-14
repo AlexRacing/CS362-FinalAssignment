@@ -11,17 +11,17 @@ public class Message
         this.message = message;
     }
     
-    public getUUID()
+    public int getUUID()
     {
         return uuid;
     }
     
-    public getOP()
+    public IUser getOP()
     {
         return op;
     }
     
-    public getMessage()
+    public String getMessage()
     {
         return message;
     }

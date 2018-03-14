@@ -2,11 +2,13 @@ import java.util.ArrayList;
 
 public class User implements IUser, IObserver, IObservable
 {
+    private int uuid;
     private ArrayList<IObserver> followers;
     private ArrayList<IObserver> following;
     
     public User()
     {
+        uuid = UUIDManager.getInstance().getNewUUID();
         followers = new ArrayList<IObserver>();
         following = new ArrayList<IObserver>();
     }

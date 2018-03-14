@@ -8,7 +8,7 @@ public class UUIDManager
         currentId = 0;
     }
 
-    public UUIDManager getInstance()
+    public static UUIDManager getInstance()
     {
         return instance;
     }
