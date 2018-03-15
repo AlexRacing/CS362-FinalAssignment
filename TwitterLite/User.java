@@ -5,6 +5,7 @@ public class User implements IUser, IObserver, IObservable
     private int uuid;
     private ArrayList<IObserver> followers;
     private ArrayList<IObserver> following;
+    private ArrayList<Message> posts;
     
     public User()
     {
@@ -28,5 +29,10 @@ public class User implements IUser, IObserver, IObservable
     
     public void update()
     {
+    }
+    
+    public ArrayList<Message> getPosts()
+    {
+        return posts;
     }
 }
