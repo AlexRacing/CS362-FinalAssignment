@@ -1,4 +1,4 @@
-public interface IUser
+public interface IUser extends IUserVisitable
 {
     
 }

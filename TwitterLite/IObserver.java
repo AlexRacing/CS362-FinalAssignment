@@ -1,4 +1,5 @@
-public interface IObserver
-{
-    public void update();
+public interface IObserver {
+    void update();
+
+    void update(IObservable source);
 }
