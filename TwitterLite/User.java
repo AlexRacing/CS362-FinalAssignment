@@ -49,6 +49,18 @@ public class User implements IUser, IObserver, IObservable, Iterable<Message> {
         if (source instanceof User) this.feedVisitor.visit((User) source);
     }
 
+    public ArrayList<IObserver> getFollowers() {
+        return followers;
+    }
+
+    public ArrayList<IObservable> getFollowing() {
+        return following;
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
     public Queue<Message> getFeed() {
         if (this.feedVisitor == null) {
             this.feedVisitor = new MessageFeedVisitor(this);

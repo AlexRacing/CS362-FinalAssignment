@@ -17,6 +17,8 @@ public class MessageFeedVisitor implements IUserVisitor {
 
     @Override
     public void visit(User user) {
+        if (!this.user.getFollowing().contains(user)) return;
+
         if (this.seen.contains(user)) {
             for (Message m : user) if (!this.feed.contains(m)) this.feed.add(m);
         } else {

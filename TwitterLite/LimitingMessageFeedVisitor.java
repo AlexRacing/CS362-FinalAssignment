@@ -18,6 +18,9 @@ public class LimitingMessageFeedVisitor extends MessageFeedVisitor {
     @Override
     public void visit(User user) {
         if (feedRequested) super.visit(user);
+
+        if (!this.user.getFollowing().contains(user)) return;
+        
         else {
             if (this.seen.contains(user)) {
                 for (Message m : user) if (!this.recent.contains(m)) this.limitingAdd(m);
