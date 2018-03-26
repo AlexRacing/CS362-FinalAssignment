@@ -1,5 +1,7 @@
-public interface IObservable
-{
-    public void attachObserver(IObserver obs);
-    public void notifyObservers();
+public interface IObservable {
+    void attachObserver(IObserver obs);
+
+    void detachObserver(IObserver obs);
+
+    void notifyObservers();
 }

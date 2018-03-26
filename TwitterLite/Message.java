@@ -1,28 +1,44 @@
+import java.util.Objects;
+
 public class Message
 {
-    int uuid;
-    IUser op;
-    String message;
+    private int uuid;
+    private IUser op; // Should this be User?
+    private String message;
     
     public Message(IUser op, String message)
     {
-        uuid = UUIDManager.getInstance().getNewUUID();
+        this.uuid = UUIDManager.getInstance().getNewUUID();
         this.op = op;
         this.message = message;
     }
     
     public int getUUID()
     {
-        return uuid;
+        return this.uuid;
     }
     
     public IUser getOP()
     {
-        return op;
+        return this.op;
     }
     
     public String getMessage()
     {
-        return message;
+        return this.message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return uuid == message.uuid;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(uuid);
     }
 }
