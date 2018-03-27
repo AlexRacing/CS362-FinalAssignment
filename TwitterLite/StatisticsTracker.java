@@ -63,7 +63,7 @@ public class StatisticsTracker implements IUserVisitor{
      *
      * @param root
      */
-    public void countAll(IUser root) {
+    public void countAll(IUserVisitable root) {
         root.acceptVisitor(this);
     }
 

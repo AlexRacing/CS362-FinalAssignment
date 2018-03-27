@@ -3,10 +3,10 @@ import java.util.Objects;
 public class Message
 {
     private int uuid;
-    private IUser op; // Should this be User?
+    private IUserVisitable op;       // Interface to allow extension for groups to post messages, in the future
     private String message;
     
-    public Message(IUser op, String message)
+    public Message(IUserVisitable op, String message)
     {
         this.uuid = UUIDManager.getInstance().getNewUUID();
         this.op = op;
@@ -18,7 +18,7 @@ public class Message
         return this.uuid;
     }
     
-    public IUser getOP()
+    public IUserVisitable getOP()
     {
         return this.op;
     }

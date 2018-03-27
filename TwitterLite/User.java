@@ -5,7 +5,7 @@ import java.util.Queue;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class User implements IUser, IObserver, IObservable, Iterable<Message> {
+public class User implements IUserVisitable, IObserver, IObservable, Iterable<Message> {
     private int                    uuid;
     private ArrayList<IObserver>   followers;
     private ArrayList<IObservable> following;

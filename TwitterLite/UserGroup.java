@@ -4,9 +4,9 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class UserGroup implements IUser, Iterable<User> {
+public class UserGroup implements IUserVisitable, Iterable<User> {
     protected int              uuid;
-    protected ArrayList<IUser> contents;
+    protected ArrayList<IUserVisitable> contents;
 
     public UserGroup() {
         this.uuid = UUIDManager.getInstance().getNewUUID();
@@ -21,7 +21,7 @@ public class UserGroup implements IUser, Iterable<User> {
     @Override
     public void forEach(Consumer<? super User> consumer) {
         // This should work but is less pattern-y
-        /*for (IUser u : this.contents) {
+        /*for (IUserVisitable u : this.contents) {
             if (u instanceof UserGroup) ((UserGroup) u).forEach(consumer);
             else consumer.accept(u);
         }*/
@@ -59,7 +59,7 @@ public class UserGroup implements IUser, Iterable<User> {
 
         @Override
         public User next() {
-            IUser next = null;
+            IUserVisitable next = null;
             while (next == null) {
                 if (this.sub != null) {
                     if (this.sub.hasNext()) return this.sub.next();
