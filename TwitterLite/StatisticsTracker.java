@@ -1,7 +1,9 @@
+import java.util.ArrayList;
+
 /**
  * We haven't discussed this, but I think it's likely necessary.
  */
-public class StatisticsTracker implements IUserVisitor{
+public class StatisticsTracker implements IUserVisitor, IObservable {
     private static StatisticsTracker instance = new StatisticsTracker();
 
     private static SentimentEngine sentimentEngine = SentimentEngine.getInstance();
@@ -14,13 +16,17 @@ public class StatisticsTracker implements IUserVisitor{
     private static long     countTrueNeutral = 0;
     private static long[][] countBySentiment = new long[2][SCALE];
 
-    private static double cummulativeSentiment = 0.0;
+    private static double cummulativeSentiment  = 0.0;
     private static double cummulativeSentiment2 = 0.0;
 
-    private StatisticsTracker() {}
+    // Observable dependencies
+    private ArrayList<IObserver> observers;
 
-    public static StatisticsTracker getInstance()
-    {
+    private StatisticsTracker() {
+        this.observers = new ArrayList<>();
+    }
+
+    public static StatisticsTracker getInstance() {
         return instance;
     }
 
@@ -42,13 +48,13 @@ public class StatisticsTracker implements IUserVisitor{
         if (sentiment == 0.0) countTrueNeutral++;
         else {
             cummulativeSentiment += sentiment;
-            cummulativeSentiment2 += sentiment*sentiment;
-            countBySentiment[(sentiment >0) ? 0 : 1][rating(sentiment)]++;
+            cummulativeSentiment2 += sentiment * sentiment;
+            countBySentiment[(sentiment > 0) ? 0 : 1][rating(sentiment)]++;
         }
     }
 
     private int rating(double sentiment) {
-        int rating = (int) (Math.abs(sentiment)*SCALE);
+        int rating = (int) (Math.abs(sentiment) * SCALE);
         if (rating >= SCALE) rating = SCALE - 1;
         return rating;
     }
@@ -67,7 +73,7 @@ public class StatisticsTracker implements IUserVisitor{
         root.acceptVisitor(this);
     }
 
-    // Visitor
+    // Visitor related methods
 
     /**
      * Use this method to completely poll an entire user structure.
@@ -91,6 +97,24 @@ public class StatisticsTracker implements IUserVisitor{
         userGroup.forEach(this::count);
     }
 
+    // Observer related methods
+
+    public void attachObserver(IObserver obs) {
+        if (!this.observers.contains(obs)) this.observers.add(obs);
+    }
+
+    public void detachObserver(IObserver obs) {
+        this.observers.remove(obs);
+    }
+
+    public void notifyObservers() {
+        for (IObserver obs : this.observers) obs.update(this);
+    }
+
+    public void notifyObservers(Object content) {
+        for (IObserver obs : this.observers) obs.update(this, content);
+    }
+
     // Getters
 
     public long getTotalUsers() {
@@ -106,37 +130,37 @@ public class StatisticsTracker implements IUserVisitor{
     }
 
     public double averageSentiment() {
-        return cummulativeSentiment/totalMessages;
+        return cummulativeSentiment / totalMessages;
     }
 
     public double stdSentiment() {
         double avg = averageSentiment();
-        return Math.sqrt(cummulativeSentiment2/totalMessages - avg*avg);
+        return Math.sqrt(cummulativeSentiment2 / totalMessages - avg * avg);
     }
 
     public double percentMorePositiveThan(double sentiment) {
-        long total = 0;
-        int rating = rating(sentiment);
+        long total  = 0;
+        int  rating = rating(sentiment);
 
         if (sentiment < 0.0) {
             total += countTrueNeutral;
             for (int i = 0; i < SCALE; i++) {
                 total += countBySentiment[0][i];
             }
-            for (int i = rating-1; i >= 0; i--) {
+            for (int i = rating - 1; i >= 0; i--) {
                 total += countBySentiment[1][i];
             }
         } else {
-            for (int i = rating+1; i < SCALE; i++) {
+            for (int i = rating + 1; i < SCALE; i++) {
                 total += countBySentiment[0][i];
             }
         }
-        return total/ (double) totalMessages;
+        return total / (double) totalMessages;
     }
 
     public double percentAtLeastAsPositiveAs(double sentiment) {
-        long total = 0;
-        int rating = rating(sentiment);
+        long total  = 0;
+        int  rating = rating(sentiment);
 
         if (sentiment < 0.0) {
             total += countTrueNeutral;
@@ -152,7 +176,7 @@ public class StatisticsTracker implements IUserVisitor{
                 total += countBySentiment[0][i];
             }
         }
-        return total/ (double) totalMessages;
+        return total / (double) totalMessages;
     }
 
     public double percentRoughlyAsPositiveAs(double sentiment) {
@@ -160,10 +184,10 @@ public class StatisticsTracker implements IUserVisitor{
 
         if (sentiment == 0.0) total = countTrueNeutral;
         else {
-            total = countBySentiment[(sentiment >0) ? 0 : 1][rating(sentiment)];
+            total = countBySentiment[(sentiment > 0) ? 0 : 1][rating(sentiment)];
         }
 
-        return total/ (double) totalMessages;
+        return total / (double) totalMessages;
     }
 
     /**
@@ -171,11 +195,11 @@ public class StatisticsTracker implements IUserVisitor{
      * dynamically determined to try to split the messages roughly equally between
      * positive, negative and neutral, where sentiment 0 messages are forced to be neutral.
      * This method returns a 2 by 2 array of doubles, of the form:
-     *      split[0][0] = percent positive
-     *      split[1][0] = sentiment boundary between positive and neutral
-     *      split[0][1] = percent negative
-     *      split[1][1] = sentiment boundary between negative and neutral
-     *
+     * split[0][0] = percent positive
+     * split[1][0] = sentiment boundary between positive and neutral
+     * split[0][1] = percent negative
+     * split[1][1] = sentiment boundary between negative and neutral
+     * <p>
      * This method will not split evenly if messages are not well distributed.
      *
      * @return The split statistics.
@@ -185,10 +209,10 @@ public class StatisticsTracker implements IUserVisitor{
 
         for (int i = 0; i < 2; i++) {
             int j;
-            for (j = SCALE-1; j >= 0 && split[0][i] < .333333333; j--) {
-                split[0][i] += countBySentiment[i][j]/((double) totalMessages);
+            for (j = SCALE - 1; j >= 0 && split[0][i] < .333333333; j--) {
+                split[0][i] += countBySentiment[i][j] / ((double) totalMessages);
             }
-            split[1][i] = ((i == 0) ? 1 : -1) * sentiment(j+1);
+            split[1][i] = ((i == 0) ? 1 : -1) * sentiment(j + 1);
         }
 
         return split;

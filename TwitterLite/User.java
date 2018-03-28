@@ -1,44 +1,66 @@
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class User implements IUserVisitable, IObserver, IObservable, Iterable<Message> {
-    private int                    uuid;
-    private ArrayList<IObserver>   followers;
-    private ArrayList<IObservable> following;
-    private ArrayList<Message> messages;
-    private MessageFeedVisitor feedVisitor = null;
+/**
+ * Class representing a user. Participant in Visitor, Observer, Composite and Iterator patterns.
+ */
+public class User extends AbstractUser implements Iterable<Message> {
+    // Users related to this one
+    private ArrayList<User> followers;
+    private ArrayList<User> following;
 
-    public User() {
-        this.uuid = UUIDManager.getInstance().getNewUUID();
+    // The messages created by this user
+    private ArrayList<Message> messages;
+
+    // The object that contains the message feed, if created
+    private MessageAggregationVisitor feedVisitor = null;
+
+    /**
+     * Creates empty user.
+     *
+     * @param name The User's name.
+     */
+    public User(String name) {
+        super(name);
         this.followers = new ArrayList<>();
         this.following = new ArrayList<>();
         this.messages = new ArrayList<>();
     }
 
+    public Message spawnMessage(String message) {
+        Message newMessage = new Message(this, message);
+        this.messages.add(newMessage);
+        StatisticsTracker.getInstance().count(newMessage);
+        notifyObservers();
+
+        return newMessage;
+    }
+
+    // Observer related methods
+
     public void attachObserver(IObserver obs) {
-        this.followers.add(obs);
+        super.attachObserver(obs);
+        if (obs instanceof User && !this.followers.contains(obs)) this.followers.add((User) obs);
     }
 
     public void detachObserver(IObserver obs) {
-        this.followers.remove(obs);
+        super.detachObserver(obs);
+        if (obs instanceof User) this.followers.remove(obs);
     }
 
-    public void notifyObservers() {
-        for (IObserver obs : this.followers) obs.update(this);
+    public void follow(User user) {
+        if (!this.following.contains(user)) {
+            this.following.add(user);
+            user.attachObserver(this);
+        }
     }
 
-    public void follow(IObservable obs) {
-        this.following.add(obs);
-        obs.attachObserver(this);
-    }
-
-    public void unfollow(IObservable obs) {
-        this.following.remove(obs);
-        obs.detachObserver(this);
+    public void unfollow(User user) {
+        this.following.remove(user);
+        user.detachObserver(this);
     }
 
     public void update() {
@@ -46,14 +68,18 @@ public class User implements IUserVisitable, IObserver, IObservable, Iterable<Me
     }
 
     public void update(IObservable source) {
-        if (source instanceof User) this.feedVisitor.visit((User) source);
     }
 
-    public ArrayList<IObserver> getFollowers() {
+    public void update(IObservable source, Object content) {
+    }
+
+    // Getters
+
+    public ArrayList<User> getFollowers() {
         return followers;
     }
 
-    public ArrayList<IObservable> getFollowing() {
+    public ArrayList<User> getFollowing() {
         return following;
     }
 
@@ -61,11 +87,14 @@ public class User implements IUserVisitable, IObserver, IObservable, Iterable<Me
         return messages;
     }
 
+    // TODO: The following methods should be moved out of user and into the controller classes
+
     public Queue<Message> getFeed() {
         if (this.feedVisitor == null) {
-            this.feedVisitor = new MessageFeedVisitor(this);
+            this.feedVisitor = new FollowingAggregationFilter(this, new SimpleAggregationVisitor());
 
-            this.following.forEach((x) -> {if (x instanceof User) this.feedVisitor.visit((User) x);});
+            this.following.forEach(this.feedVisitor::visit);
+            //or: (x) -> {if (x instanceof User) this.feedVisitor.visit((User) x);});
         }
 
         return this.feedVisitor.getFeed();
@@ -73,13 +102,33 @@ public class User implements IUserVisitable, IObserver, IObservable, Iterable<Me
 
     public Queue<Message> getFeed(int limit) {
         if (this.feedVisitor == null) {
-            this.feedVisitor = new LimitingMessageFeedVisitor(this, limit);
+            this.feedVisitor =
+                    new FollowingAggregationFilter(this, new LimitedAggregationVisitor(limit));
 
-            this.following.forEach((x) -> {if (x instanceof User) this.feedVisitor.visit((User) x);});
+            this.following.forEach(this.feedVisitor::visit);
+            //(x) -> {if (x instanceof User) this.feedVisitor.visit((User) x);});
         }
 
         return this.feedVisitor.getFeed();
     }
+
+    // Methods related to the getters
+
+    /**
+     * Call this method the clear any existing feed and thus prevent further updating of that feed.
+     */
+    public void clearFeed() {
+        this.feedVisitor = null;
+    }
+
+    // Visitor related methods
+
+    @Override
+    public void acceptVisitor(IUserVisitor userVisitor) {
+        userVisitor.visit(this);
+    }
+
+    // Iterator related methods
 
     @Override
     public Iterator<Message> iterator() {
@@ -94,23 +143,5 @@ public class User implements IUserVisitable, IObserver, IObservable, Iterable<Me
     @Override
     public Spliterator<Message> spliterator() {
         return this.messages.spliterator();
-    }
-
-    @Override
-    public void acceptVisitor(IUserVisitor userVisitor) {
-        userVisitor.visit(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User messages = (User) o;
-        return uuid == messages.uuid;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
     }
 }

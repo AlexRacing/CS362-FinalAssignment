@@ -1,30 +1,33 @@
 import java.util.Objects;
 
-public class Message
-{
-    private int uuid;
-    private IUserVisitable op;       // Interface to allow extension for groups to post messages, in the future
+/**
+ * Class representing a user's message.
+ */
+public class Message extends UUIDed {
+    private User   op;
     private String message;
-    
-    public Message(IUserVisitable op, String message)
-    {
-        this.uuid = UUIDManager.getInstance().getNewUUID();
+    private long   timecode;
+
+    public Message(User op, String message) {
+        super();
+        this.timecode = System.currentTimeMillis();
         this.op = op;
         this.message = message;
     }
-    
-    public int getUUID()
-    {
+
+    public int getUUID() {
         return this.uuid;
     }
-    
-    public IUserVisitable getOP()
-    {
+
+    public long getTimecode() {
+        return this.timecode;
+    }
+
+    public User getOP() {
         return this.op;
     }
-    
-    public String getMessage()
-    {
+
+    public String getMessage() {
         return this.message;
     }
 
@@ -38,7 +41,31 @@ public class Message
 
     @Override
     public int hashCode() {
-
         return Objects.hash(uuid);
+    }
+
+    @Override
+    public String toString() {
+        return this.message;
+    }
+
+    public String toDetailedString() {
+        return "Message{" +
+               "op=" + op +
+               ", message='" + message + '\'' +
+               ", timecode=" + timecode +
+               ", uuid=" + uuid +
+               '}';
+    }
+
+    // Time comparable related methods
+
+    public int compareTime(Message message) {
+        return Long.compare(this.getTimecode(), message.getTimecode());
+    }
+
+    public boolean isNewerThan(Message message) {
+        // This might be backwards
+        return Long.compare(this.getTimecode(), message.getTimecode()) < 0;
     }
 }
