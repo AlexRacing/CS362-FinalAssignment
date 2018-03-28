@@ -32,16 +32,22 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
 
     public void count(User newUser) {
         totalUsers++;
+
+        notifyObservers(newUser);
     }
 
     public void count(UserGroup newUserGroup) {
         totalGroups++;
+
+        notifyObservers(newUserGroup);
     }
 
     public void count(Message newMessage) {
         totalMessages++;
 
         this.countSentiment(sentimentEngine.sentimentScore(newMessage));
+
+        notifyObservers(newMessage);
     }
 
     private void countSentiment(double sentiment) {

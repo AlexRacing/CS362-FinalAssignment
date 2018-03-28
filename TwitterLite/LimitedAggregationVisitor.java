@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -36,6 +37,18 @@ public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
         } else if (message.isNewerThan(this.cut)) {
             this.recent.add(message);
             this.cut = this.recent.remove();
+        }
+    }
+
+    @Override
+    protected void purgeUser(User user) {
+        if (feedRequested) super.purgeUser(user);
+        else for (Iterator<Message> iterator = this.recent.iterator(); iterator.hasNext(); ) {
+            Message message = iterator.next();
+            if (user.equals(message.getOP())) {
+                iterator.remove();
+                count--;
+            }
         }
     }
 

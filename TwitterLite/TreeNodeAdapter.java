@@ -1,5 +1,4 @@
 import java.util.Collection;
-import java.util.function.Consumer;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

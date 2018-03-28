@@ -26,7 +26,13 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
 
     @Override
     public void update(IObservable source) {
-        if (source instanceof User) this.visit((User) source);
+        if (source instanceof User) {
+            User u = (User) source;
+            if (this.shouldSkip(u) && this.seen.get(u) != null) {
+                this.purgeUser(u);
+                this.seen.remove(u);
+            } else this.visit(u);
+        }
     }
 
     @Override
@@ -109,6 +115,13 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
      * @param message The message to possibly add.
      */
     protected abstract void consider(Message message);
+
+    /**
+     * Requests a user be purged from the feed.
+     *
+     * @param user The user to purge.
+     */
+    protected abstract void purgeUser(User user);
 
     /**
      * @return Message feed as queue, most recent to least recent.

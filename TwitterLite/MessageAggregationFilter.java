@@ -22,6 +22,11 @@ public abstract class MessageAggregationFilter extends MessageAggregationVisitor
     }
 
     @Override
+    protected void purgeUser(User user) {
+        this.aggregator.purgeUser(user);
+    }
+
+    @Override
     public Queue<Message> getFeed() {
         return this.aggregator.getFeed();
     }

@@ -1,12 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 /**
  * Class representing a user group. Participant in Visitor, Composite and Iterator (through Collection) patterns.
@@ -32,7 +28,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
         if (!this.contents.contains(abstractUser)) {
             this.contents.add(abstractUser);
             abstractUser.setParent(this); // Possibly redundant
-            this.numberUsers = this.caluculateSize(); // TODO:
+            this.numberUsers = this.calculateSize(); // TODO:
             abstractUser.attachObserver(this);
             this.notifyObservers(abstractUser);
             return true;
@@ -46,7 +42,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
             this.contents.remove(o);
             if (o instanceof AbstractUser) {
                 ((AbstractUser) o).detachObserver(this);
-                this.numberUsers = this.caluculateSize(); // TODO:
+                this.numberUsers = this.calculateSize(); // TODO:
             }
             this.notifyObservers(o);
             return true;
@@ -71,14 +67,14 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
 
     @Override
     public void update() {
-        this.numberUsers = this.caluculateSize();
+        this.numberUsers = this.calculateSize();
     }
 
     @Override
     public void update(IObservable source) {
         if (this.contents.contains(source)) {
             if (source instanceof UserGroup) {
-                this.numberUsers = this.caluculateSize();
+                this.numberUsers = this.calculateSize();
             }
         }
     }
@@ -87,7 +83,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
     public void update(IObservable source, Object content) {
         if (this.contents.contains(source)) {
             if (source instanceof UserGroup) {
-                this.numberUsers = this.caluculateSize();
+                this.numberUsers = this.calculateSize();
             }
         }
     }
@@ -99,7 +95,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
         return this.numberUsers;
     }
 
-    private int caluculateSize() {
+    private int calculateSize() {
         int userCount = this.contents.size();
 
         for (AbstractUser u : this.contents) {

@@ -18,6 +18,11 @@ public class SimpleAggregationVisitor extends MessageAggregationVisitor {
         this.feed.add(message);
     }
 
+    @Override
+    protected void purgeUser(User user) {
+        this.feed.removeIf(m -> user.equals(m.getOP()));
+    }
+
     /**
      * @return Message feed as queue, most recent to least recent.
      */
