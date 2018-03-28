@@ -5,6 +5,7 @@ import java.util.ArrayList;
  */
 public abstract class AbstractUser extends UUIDed implements IObserver, IObservable, IUserVisitable {
     protected final String name;
+    protected AbstractCompositeUser parent;
 
     // Observable dependencies
     protected ArrayList<IObserver> observers;
@@ -15,6 +16,18 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
     protected AbstractUser(String name) {
         super();
         this.name = name;
+        this.parent = null;
+        this.observers = new ArrayList<>();
+    }
+
+    /**
+     * @param name The name
+     * @param parent The parent
+     */
+    protected AbstractUser(String name, AbstractCompositeUser parent) {
+        super();
+        this.name = name;
+        this.parent = parent;
         this.observers = new ArrayList<>();
     }
 
@@ -23,6 +36,18 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
      */
     public String getName() {
         return this.name;
+    }
+
+    protected void setParent(AbstractCompositeUser newParent) {
+        this.parent = newParent;
+    }
+
+    public AbstractUser getParent() {
+        return this.parent;
+    }
+
+    public void removeFromParent() {
+        this.parent.remove(this);
     }
 
     // Observer related methods
@@ -43,5 +68,32 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
         for (IObserver obs : this.observers) obs.update(this, content);
     }
 
-    //protected int size() {return 1;}
+    // Observer related stubs
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void update(IObservable source) {
+
+    }
+
+    @Override
+    public void update(IObservable source, Object content) {
+
+    }
+
+    // Tree related method defaults
+
+    int getChildCount() {return 0;}
+
+    boolean getAllowsChildren() {
+        return false;
+    }
+
+    boolean isLeaf() {
+        return true;
+    }
 }

@@ -12,7 +12,9 @@ public interface IObserver {
      *
      * @param source The source of the change.
      */
-    void update(IObservable source);
+    default void update(IObservable source) {
+        update();
+    }
 
     /**
      * Notifies of an update.
@@ -20,5 +22,7 @@ public interface IObserver {
      * @param source The source of the change.
      * @param content The content of the change.
      */
-    void update(IObservable source, Object content);
+    default void update(IObservable source, Object content) {
+        update(source);
+    }
 }

@@ -1,30 +1,38 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  * Class representing a user group. Participant in Visitor, Composite and Iterator (through Collection) patterns.
  */
-public class UserGroup extends AbstractUser implements Collection<User> { //, TreeModel
+public class UserGroup extends AbstractCompositeUser implements Collection<User> { //
     protected ArrayList<AbstractUser> contents;
 
-    protected int size;
+    protected int numberUsers;
 
     public UserGroup(String name) {
         super(name);
         this.contents = new ArrayList<>();
-        this.size = 0;
+        this.numberUsers = 0;
+    }
+
+    public UserGroup(String name, AbstractCompositeUser parent) {
+        super(name, parent);
+        this.contents = new ArrayList<>();
+        this.numberUsers = 0;
     }
 
     public boolean add(AbstractUser abstractUser) {
         if (!this.contents.contains(abstractUser)) {
             this.contents.add(abstractUser);
+            abstractUser.setParent(this); // Possibly redundant
+            this.numberUsers = this.caluculateSize(); // TODO:
             abstractUser.attachObserver(this);
             this.notifyObservers(abstractUser);
             return true;
@@ -36,21 +44,18 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
     public boolean remove(Object o) {
         if (!this.contents.contains(o)) {
             this.contents.remove(o);
-            if (o instanceof AbstractUser) ((AbstractUser) o).detachObserver(this);
+            if (o instanceof AbstractUser) {
+                ((AbstractUser) o).detachObserver(this);
+                this.numberUsers = this.caluculateSize(); // TODO:
+            }
             this.notifyObservers(o);
             return true;
         }
         return false;
     }
 
-    public User spawnUser(String name) {
-        User newUser = new User(name);
-        this.add(newUser);
-        return newUser;
-    }
-
     public UserGroup spawnUserGroup(String name) {
-        UserGroup newGroup = new UserGroup(name);
+        UserGroup newGroup = new UserGroup(name, this);
         this.add(newGroup);
         return newGroup;
     }
@@ -66,28 +71,32 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
 
     @Override
     public void update() {
-
+        this.numberUsers = this.caluculateSize();
     }
 
     @Override
     public void update(IObservable source) {
         if (this.contents.contains(source)) {
             if (source instanceof UserGroup) {
-                this.size = this.caluculateSize();
+                this.numberUsers = this.caluculateSize();
             }
         }
     }
 
     @Override
     public void update(IObservable source, Object content) {
-
+        if (this.contents.contains(source)) {
+            if (source instanceof UserGroup) {
+                this.numberUsers = this.caluculateSize();
+            }
+        }
     }
 
     // Collection related methods
 
     @Override
     public int size() {
-        return this.size;
+        return this.numberUsers;
     }
 
     private int caluculateSize() {
@@ -99,6 +108,7 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
 
         return userCount;
     }
+
     @Override
     public boolean add(User u) {
         return this.add(u);
@@ -106,7 +116,7 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
 
     @Override
     public boolean isEmpty() {
-        return this.size == 0;
+        return this.numberUsers == 0;
     }
 
     @Override
@@ -124,35 +134,6 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
     @Override
     public Iterator<User> iterator() {
         return new UserGroupIterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        return new ArrayList<>(this).toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] ts) {
-        return new ArrayList<>((Collection<T>) this).toArray(ts);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> collection) {
-        boolean contains = true;
-        for (Object o : collection) if(!this.contains(o)) {
-            contains = false;
-            break;
-        }
-        return contains;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends User> collection) {
-        boolean added = true;
-        for (User u : collection) if(!this.add(u)) {
-            added = false;
-        }
-        return added;
     }
 
     @Override
@@ -275,55 +256,25 @@ public class UserGroup extends AbstractUser implements Collection<User> { //, Tr
         }
     }
 
-    // JTree related methods
-/*
+    // Tree related methods
+
     @Override
-    public Object getRoot() {
-        for (IObserver o : this.observers) if (o instanceof UserGroup) return o;
-        return this;
+    AbstractUser getChildAt(int i) {
+        return this.contents.get(i);
     }
 
     @Override
-    public Object getChild(Object o, int i) {
-        if (this.equals(o)) return this.contents.get(i);
-        Object temp = null;
-        for (AbstractUser u : this.contents) {
-            if (u instanceof UserGroup) {
-                temp = ((UserGroup) u).getChild(o, i);
-                if (temp != null) break;
-            }
-        }
-        return temp;
-    }
-
-    @Override
-    public int getChildCount(Object o) {
+    int getChildCount() {
         return this.contents.size();
     }
 
     @Override
-    public boolean isLeaf(Object o) {
-        return false;
+    int getIndex(AbstractUser treeNode) {
+        return this.contents.indexOf(treeNode);
     }
 
     @Override
-    public void valueForPathChanged(TreePath treePath, Object o) {
-
+    Collection<AbstractUser> children() {
+        return this.contents;
     }
-
-    @Override
-    public int getIndexOfChild(Object o, Object o1) {
-        return 0;
-    }
-
-    @Override
-    public void addTreeModelListener(TreeModelListener treeModelListener) {
-
-    }
-
-    @Override
-    public void removeTreeModelListener(TreeModelListener treeModelListener) {
-
-    }
-    //*/
 }

@@ -1,8 +1,11 @@
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+
+import javax.swing.tree.TreeNode;
 
 /**
  * Class representing a user. Participant in Visitor, Observer, Composite and Iterator patterns.
@@ -25,6 +28,19 @@ public class User extends AbstractUser implements Iterable<Message> {
      */
     public User(String name) {
         super(name);
+        this.followers = new ArrayList<>();
+        this.following = new ArrayList<>();
+        this.messages = new ArrayList<>();
+    }
+
+    /**
+     * Creates empty user.
+     *
+     * @param name The User's name.
+     * @param parent The parent
+     */
+    public User(String name, AbstractCompositeUser parent) {
+        super(name, parent);
         this.followers = new ArrayList<>();
         this.following = new ArrayList<>();
         this.messages = new ArrayList<>();
@@ -65,12 +81,6 @@ public class User extends AbstractUser implements Iterable<Message> {
 
     public void update() {
         this.feedVisitor = null; // The feed is now invalid
-    }
-
-    public void update(IObservable source) {
-    }
-
-    public void update(IObservable source, Object content) {
     }
 
     // Getters
@@ -144,4 +154,37 @@ public class User extends AbstractUser implements Iterable<Message> {
     public Spliterator<Message> spliterator() {
         return this.messages.spliterator();
     }
+
+
+    // Tree related methods
+    /*
+
+    public TreeNode getChildAt(int i) {
+        return null;
+    }
+
+    @Override
+    public int getChildCount() {
+        return 0;
+    }
+
+    @Override
+    public int getIndex(AbstractUser treeNode) {
+        return -1;
+    }
+
+    @Override
+    public boolean getAllowsChildren() {
+        return false;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
+    }
+
+    @Override
+    public Enumeration children() {
+        return null;
+    }//*/
 }
