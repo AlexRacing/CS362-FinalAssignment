@@ -1,37 +1,20 @@
+import java.io.PrintStream;
+
 public class TestVisitor implements IUserVisitor {
-    private final StringBuilder out;
-    private final String delim;
+    private final PrintStream out;
 
-    public TestVisitor() {
-        this.out = new StringBuilder();
-        this.delim = "\n";
-    }
+    public TestVisitor() {this.out = System.out;}
 
-    public TestVisitor(StringBuilder out) {
-        this.out = out;
-        this.delim = "\n";
-    }
-
-    public TestVisitor(String delim) {
-        this.out = new StringBuilder();
-        this.delim = delim;
-    }
-
-    public TestVisitor(StringBuilder out, String delim) {
-        this.out = out;
-        this.delim = delim;
-    }
+    public TestVisitor(PrintStream out) {this.out = out;}
 
     @Override
     public void visit(User user) {
-        this.out.append(user.toDetailedString());
-        this.out.append(delim);
+        this.out.println("Visiting User: "+user.toDetailedString());
     }
 
     @Override
     public void visit(UserGroup userGroup) {
-        this.out.append(userGroup.toDetailedString());
-        this.out.append(delim);
+        this.out.println("Visiting User: "+userGroup.toDetailedString());
         userGroup.children().forEach(u -> u.acceptVisitor(this));
     }
 }
