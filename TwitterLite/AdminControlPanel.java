@@ -1,5 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AdminControlPanel {
     private JFrame adminCtrFrame;
@@ -56,7 +58,11 @@ public class AdminControlPanel {
         groupID = new JTextField();
         addGroup = new JButton("Add Group");
         openUserView = new JButton("Open User View");
-        
+
+        addUser.addActionListener(new addUserAL());
+        addGroup.addActionListener(new addGroupAL());
+        openUserView.addActionListener(new openUserViewAL());
+
         rightUpper.add(userID);
         rightUpper.add(addUser);
         rightUpper.add(groupID);
@@ -69,7 +75,12 @@ public class AdminControlPanel {
         showGroupTotal = new JButton("Show Group Total");
         showMessageTotal = new JButton("Show Message Total");
         showPositivePercent = new JButton("Show Positive Percentage");
-        
+
+        showUserTotal.addActionListener(new showUserTotalAL());
+        showGroupTotal.addActionListener((new showGroupTotalAL()));
+        showMessageTotal.addActionListener(new showMessageTotalAL());
+        showPositivePercent.addActionListener(new showPositivePercentAL());
+
         rightLower.add(showUserTotal);
         rightLower.add(showGroupTotal);
         rightLower.add(showMessageTotal);
@@ -80,5 +91,40 @@ public class AdminControlPanel {
         adminCtrFrame.getContentPane().add(primary);
         adminCtrFrame.pack();
         adminCtrFrame.setVisible(true);
+    }
+
+    public class addUserAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class addGroupAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class showUserTotalAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class showGroupTotalAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class showMessageTotalAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class showPositivePercentAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class openUserViewAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
     }
 }
