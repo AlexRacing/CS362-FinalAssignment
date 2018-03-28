@@ -107,8 +107,8 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
 
     @Override
     public boolean add(User u) {
-        return this.add(u);
-    }
+        return this.add((AbstractUser) u);
+    }//*/
 
     @Override
     public boolean isEmpty() {

@@ -38,6 +38,20 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
         return this.name;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    public String toDetailedString() {
+        return super.toString()+"{" +
+               "'" + name + '\'' +
+               " in " + parent +
+               " watched by " + observers +
+               " id: " + uuid +
+               '}';
+    }
+
     protected void setParent(AbstractCompositeUser newParent) {
         this.parent = newParent;
     }
