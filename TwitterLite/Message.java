@@ -50,11 +50,11 @@ public class Message extends UUIDed {
     }
 
     public String toDetailedString() {
-        return "Message{" +
-               "op=" + op +
-               ", message='" + message + '\'' +
-               ", timecode=" + timecode +
-               ", uuid=" + uuid +
+        return super.toString()+"{" +
+               "'" + message + '\'' +
+               " by " + op +
+               " at " + timecode +
+               " id: " + uuid +
                '}';
     }
 

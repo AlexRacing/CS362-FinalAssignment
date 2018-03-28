@@ -26,6 +26,9 @@ public class StringStructureAggregatorVisitor implements IUserVisitor {
     public void visit(User user) {
         this.out.append(user.toDetailedString());
         this.out.append(delim);
+        user.forEach(m -> {
+            this.out.append(m.toDetailedString());
+            this.out.append(delim);});
     }
 
     @Override

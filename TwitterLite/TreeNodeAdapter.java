@@ -72,6 +72,9 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
     @Override
     public String toString() {
+        if (getUserObject() instanceof AbstractUser) {
+            return ((AbstractUser) getUserObject()).getName();
+        }
         return getUserObject().toString();
     }
 

@@ -10,6 +10,7 @@ public class TestVisitor implements IUserVisitor {
     @Override
     public void visit(User user) {
         this.out.println("Visiting User: "+user.toDetailedString());
+        user.forEach(m -> this.out.println("Visiting User: "+m.toDetailedString()));
     }
 
     @Override
