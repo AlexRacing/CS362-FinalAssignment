@@ -1,5 +1,11 @@
+import java.util.Collection;
+import java.util.function.Consumer;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * This class Adapts our user constructs into the JTree model.
+ */
 public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver {
 
     protected TreeNodeAdapter(AbstractUser content) {
@@ -48,26 +54,22 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
         if (u instanceof AbstractCompositeUser) {
             AbstractCompositeUser composite = (AbstractCompositeUser) u;
-            this.children.removeIf(c -> !(c instanceof TreeNodeAdapter) ||
-                                        !composite.contains(((TreeNodeAdapter) c).getUserObject()));
+            this.retainIf(composite.children());
             composite.forEach(this::populateIfMissing);
         }
     }
 
-    /*
     protected void rebind(AbstractUser u) {
         Object o = getUserObject();
         if (o == null || !(o instanceof AbstractUser)) return;
+        if (u.equals(o)) rebind();
 
-        AbstractUser u = (AbstractUser) o;
-
-        if (u instanceof AbstractCompositeUser) {
-            AbstractCompositeUser composite = (AbstractCompositeUser) u;
-            this.children.removeIf(c -> !(c instanceof TreeNodeAdapter) ||
-                                        !composite.contains(((TreeNodeAdapter) c).getUserObject()));
-            composite.forEach(this::populateIfMissing);
+        if (o instanceof AbstractCompositeUser) {
+            AbstractCompositeUser composite = (AbstractCompositeUser) o;
+            if (childContains(u) && !composite.children().contains(u)) remove(u);
+            else if (!composite.children().contains(u)) this.populate(u);
         }
-    }//*/
+    }
 
     @Override
     public String toString() {
@@ -78,17 +80,27 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     public void update() {
         rebind();
     }
-/*
+
     @Override
     public void update(IObservable source) {
-        if (this.childContains(source)) {
-            AbstractUser content = (AbstractUser) this.getUserObject();
-            if (content instanceof AbstractCompositeUser) {
-                AbstractCompositeUser
+        Object o = getUserObject();
+        if (o == null || !(o instanceof AbstractUser)) return;
+        if (source.equals(o)) rebind();
+    }
+
+    @Override
+    public void update(IObservable source, Object content) {
+        Object o = getUserObject();
+        if (o == null || !(o instanceof AbstractUser)) return;
+        if (source.equals(o)) {
+            if (content instanceof AbstractUser && childContains(content)) {
+                addIfMissing((AbstractUser) content);
+            } else {
+                this.remove(content);
             }
         }
     }
-//*/
+
     protected boolean childContains(Object o) {
         if (this.getChildCount() > 0 && this.children != null) {
             return this.children.stream().anyMatch(c -> (c instanceof TreeNodeAdapter) &&
@@ -98,19 +110,27 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
         return false;
     }
 
-    /*
-    @Override
-    public void remove(MutableTreeNode mutableTreeNode) {
-        super.remove(mutableTreeNode);
+    protected void remove(Object o) {
+        for (Object c : this.children) {
+            if ((c instanceof TreeNodeAdapter) && o.equals(((TreeNodeAdapter) c).getUserObject())) {
+                this.remove((TreeNodeAdapter) c);
+                break;
+            }
+        }
+    }
+
+    protected void retainIf(Collection collection) {
+        for (Object c : this.children) {
+            if ((c instanceof TreeNodeAdapter) &&
+                !collection.contains(((TreeNodeAdapter) c).getUserObject())) {
+                this.remove((TreeNodeAdapter) c);
+            }
+        }
     }
 
     @Override
     public void setUserObject(Object o) {
         super.setUserObject(o);
+        rebind();
     }
-
-    @Override
-    public Object getUserObject() {
-        return super.getUserObject();
-     */
 }
