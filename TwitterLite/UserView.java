@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class UserView {
@@ -45,6 +47,8 @@ public class UserView {
         // ========================== top Components ==========================
         userID = new JTextField();
         followUser = new JButton("Follow User");
+
+        followUser.addActionListener(new followUserAL());
         
         top.add(userID);
         top.add(followUser);
@@ -61,7 +65,9 @@ public class UserView {
         tweetMessage = new JTextArea(5,10);
         postTweet = new JButton("Post Tweet");
         tweetMessage_scroll = new JScrollPane(tweetMessage);
-        
+
+        postTweet.addActionListener(new postTweetAL());
+
         middleBottom.add(tweetMessage_scroll);
         middleBottom.add(postTweet);
         // ====================================================================
@@ -77,5 +83,15 @@ public class UserView {
         userViewFrame.getContentPane().add(primary);
         userViewFrame.pack();
         userViewFrame.setVisible(true);
+    }
+
+    public class followUserAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class postTweetAL implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+        }
     }
 }
