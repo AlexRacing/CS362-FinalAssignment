@@ -100,7 +100,7 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     @Override
     public void visit(UserGroup userGroup) {
         this.count(userGroup);
-        userGroup.forEach(this::count);
+        userGroup.children().forEach(u -> u.acceptVisitor(this));
     }
 
     // Observer related methods

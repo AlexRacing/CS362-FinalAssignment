@@ -10,5 +10,7 @@ public interface IUserVisitor {
     /**
      * @param userGroup UserGroup to operate on.
      */
-    void visit(UserGroup userGroup);
+    default void visit(UserGroup userGroup) {
+        userGroup.children().forEach(u -> u.acceptVisitor(this));
+    }
 }

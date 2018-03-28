@@ -80,16 +80,6 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     }
 
     /**
-     * Traverses the UserGroup, considering all its Users.
-     *
-     * @param userGroup UserGroup to traverse
-     */
-    @Override
-    public void visit(UserGroup userGroup) {
-        userGroup.forEach(this::visit);
-    }
-
-    /**
      * Used to add newly created messages to the feed.
      *
      * @param message Message to consider
