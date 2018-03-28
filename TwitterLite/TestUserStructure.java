@@ -8,6 +8,6 @@ public class TestUserStructure {
 
         User user1 = level1.spawnUser("Chris MacDonald");
 
-        root.acceptVisitor(new TestVisitor());
+        root.acceptVisitor(new TestVisitor(out));
     }
 }
