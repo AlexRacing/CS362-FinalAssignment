@@ -23,16 +23,7 @@ public class AdminControlPanel {
 
         root = new TreeNodeAdapter(ugRoot);
         tree = new JTree(root);
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreeNodeAdapter node = (TreeNodeAdapter)tree.getLastSelectedPathComponent();
-
-                if(node == null) return;
-
-                Object nodeInfo = node.getUserObject();
-            }
-        });
+        tree.addTreeSelectionListener(new SelectionListener());
 
         adminCtrFrame = new JFrame("Admin Control Panel");
         adminCtrFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,6 +142,16 @@ public class AdminControlPanel {
 
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+        }
+    }
+
+    public class SelectionListener implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent se) {
+            JTree tree = (JTree) se.getSource();
+            TreeNodeAdapter selectedNode = (TreeNodeAdapter) tree.getLastSelectedPathComponent();
+            String selectedNodeName = selectedNode.toString();
+            if(selectedNode.isLeaf())
+                System.out.println(selectedNodeName); // does nothing useful but shows listener is working
         }
     }
 }
