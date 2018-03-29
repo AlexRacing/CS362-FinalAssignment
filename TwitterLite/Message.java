@@ -1,7 +1,7 @@
 import java.util.Objects;
 
 /**
- * Class representing a user's message.
+ * Class representing a users's message.
  */
 public class Message extends UUIDed {
     private User   op;
@@ -64,8 +64,17 @@ public class Message extends UUIDed {
         return Long.compare(this.getTimecode(), message.getTimecode());
     }
 
+    public int compareTime(long timecode) {
+        return Long.compare(this.getTimecode(), timecode);
+    }
+
     public boolean isNewerThan(Message message) {
         // This might be backwards
         return Long.compare(this.getTimecode(), message.getTimecode()) < 0;
+    }
+
+    public boolean isNewerThan(long timecode) {
+        // This might be backwards
+        return Long.compare(this.getTimecode(), timecode) < 0;
     }
 }

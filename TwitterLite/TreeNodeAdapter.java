@@ -3,7 +3,7 @@ import java.util.Collection;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * This class Adapts our user constructs into the JTree model.
+ * This class Adapts our users constructs into the JTree model.
  */
 public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver {
 

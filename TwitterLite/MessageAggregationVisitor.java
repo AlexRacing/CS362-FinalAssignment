@@ -7,7 +7,7 @@ import java.util.Queue;
  * Template Method pattern and participant in the Decorator pattern.
  */
 public abstract class MessageAggregationVisitor implements IUserVisitor, IObserver {
-    // The users seen and most recent messages aggregated from that user.
+    // The users seen and most recent messages aggregated from that users.
     protected final Map<User, Message> seen;
 
     public MessageAggregationVisitor() {
@@ -52,7 +52,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     // Visitor related methods
 
     /**
-     * Considers the user's messages for addition.
+     * Considers the users's messages for addition.
      *
      * @param user User to traverse
      */
@@ -62,20 +62,20 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
 
         Message lastSeen = this.seen.get(user);
 
-        if (lastSeen != null) { // If the user has been seen before
+        if (lastSeen != null) { // If the users has been seen before
             Message newMostRecent = lastSeen;
             for (Message m : user)
                 if (m.isNewerThan(lastSeen)) {
                     if (m.isNewerThan(newMostRecent)) newMostRecent = m;
                     this.consider(m);
                 }
-        } else { // If the user has not been seen before
+        } else { // If the users has not been seen before
             user.attachObserver(this);
             for (Message m : user) {
                 if (m.isNewerThan(lastSeen)) lastSeen = m;
                 this.consider(m);
             }
-            this.seen.put(user, lastSeen); // The user has now been seen
+            this.seen.put(user, lastSeen); // The users has now been seen
         }
     }
 
@@ -91,11 +91,11 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     // Template method related methods
 
     /**
-     * If the user should be skipped.
+     * If the users should be skipped.
      *
      * @param user User to consider
      *
-     * @return Whether the user should be skipped.
+     * @return Whether the users should be skipped.
      */
     protected abstract boolean shouldSkip(User user);
 
@@ -107,9 +107,9 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     protected abstract void consider(Message message);
 
     /**
-     * Requests a user be purged from the feed.
+     * Requests a users be purged from the feed.
      *
-     * @param user The user to purge.
+     * @param user The users to purge.
      */
     protected abstract void purgeUser(User user);
 

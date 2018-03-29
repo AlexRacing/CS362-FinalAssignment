@@ -8,21 +8,21 @@ import java.util.function.Consumer;
 import javax.swing.tree.TreeNode;
 
 /**
- * Class representing a user. Participant in Visitor, Observer, Composite and Iterator patterns.
+ * Class representing a users. Participant in Visitor, Observer, Composite and Iterator patterns.
  */
 public class User extends AbstractUser implements Iterable<Message> {
     // Users related to this one
     private ArrayList<User> followers;
     private ArrayList<User> following;
 
-    // The messages created by this user
+    // The messages created by this users
     private ArrayList<Message> messages;
 
     // The object that contains the message feed, if created
     private MessageAggregationVisitor feedVisitor = null;
 
     /**
-     * Creates empty user.
+     * Creates empty users.
      *
      * @param name The User's name.
      */
@@ -34,7 +34,7 @@ public class User extends AbstractUser implements Iterable<Message> {
     }
 
     /**
-     * Creates empty user.
+     * Creates empty users.
      *
      * @param name The User's name.
      * @param parent The parent
@@ -99,7 +99,7 @@ public class User extends AbstractUser implements Iterable<Message> {
         return messages;
     }
 
-    // TODO: The following methods should be moved out of user and into the controller classes
+    // TODO: The following methods should be moved out of users and into the controller classes
 
     public Queue<Message> getFeed() {
         if (this.feedVisitor == null) {

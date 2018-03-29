@@ -79,7 +79,7 @@ public class UserView {
         bottom.add(newsFeed);
         // ====================================================================
         
-        userViewFrame.setResizable(false); // prevents the frame from being resized by the user
+        userViewFrame.setResizable(false); // prevents the frame from being resized by the users
         userViewFrame.getContentPane().add(primary);
         userViewFrame.pack();
         userViewFrame.setVisible(true);

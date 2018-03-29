@@ -87,7 +87,7 @@ public class AdminControlPanel {
         rightLower.add(showPositivePercent);
         // ====================================================================
         
-        adminCtrFrame.setResizable(false); // prevents the frame from being resized by the user
+        adminCtrFrame.setResizable(false); // prevents the frame from being resized by the users
         adminCtrFrame.getContentPane().add(primary);
         adminCtrFrame.pack();
         adminCtrFrame.setVisible(true);

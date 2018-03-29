@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
- * Class representing a user group. Participant in Visitor, Composite and Iterator (through Collection) patterns.
+ * Class representing a users group. Participant in Visitor, Composite and Iterator (through Collection) patterns.
  */
 public class UserGroup extends AbstractCompositeUser implements Collection<User> { //
     protected ArrayList<AbstractUser> contents;
@@ -175,7 +175,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
 
     /*
      * Not thread safe!
-     * Could be generalized if we want to make user have trivial iterators.
+     * Could be generalized if we want to make users have trivial iterators.
      */
     private class UserGroupIterator implements Iterator<User> {
         private int cursor;
@@ -200,7 +200,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
         /**
          * May throw an exception if the rest of the list is empty usergroups.
          *
-         * @return The next valid user
+         * @return The next valid users
          */
         @Override
         public User next() {

@@ -71,7 +71,7 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     }
 
     /**
-     * Use this method to completely poll an entire user structure.
+     * Use this method to completely poll an entire users structure.
      *
      * @param root
      */
@@ -82,7 +82,7 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     // Visitor related methods
 
     /**
-     * Use this method to completely poll an entire user structure.
+     * Use this method to completely poll an entire users structure.
      *
      * @param user User to count, including evey message
      */
@@ -93,9 +93,9 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     }
 
     /**
-     * Use this method to completely poll an entire user structure.
+     * Use this method to completely poll an entire users structure.
      *
-     * @param userGroup UserGroup to count, including every user and message
+     * @param userGroup UserGroup to count, including every users and message
      */
     @Override
     public void visit(UserGroup userGroup) {
