@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 /**
  * Class representing a users group. Participant in Visitor, Composite and Iterator (through Collection) patterns.
  */
-public class UserGroup extends AbstractCompositeUser implements Collection<User> { //
+public class UserGroup extends AbstractCompositeUser { //
     protected ArrayList<AbstractUser> contents;
 
     protected int numberUsers;
@@ -24,6 +24,7 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
         this.numberUsers = 0;
     }
 
+    @Override
     public boolean add(AbstractUser abstractUser) {
         if (!this.contents.contains(abstractUser)) {
             this.contents.add(abstractUser);
@@ -48,12 +49,6 @@ public class UserGroup extends AbstractCompositeUser implements Collection<User>
             return true;
         }
         return false;
-    }
-
-    public UserGroup spawnUserGroup(String name) {
-        UserGroup newGroup = new UserGroup(name, this);
-        this.add(newGroup);
-        return newGroup;
     }
 
     // Visitor related methods

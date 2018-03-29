@@ -21,12 +21,19 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
     }
 
     public abstract boolean add(AbstractUser abstractUser);
+
     public abstract boolean remove(Object o);
 
     public User spawnUser(String name) {
         User newUser = new User(name, this);
         this.add(newUser);
         return newUser;
+    }
+
+    public UserGroup spawnUserGroup(String name) {
+        UserGroup newGroup = new UserGroup(name, this);
+        this.add(newGroup);
+        return newGroup;
     }
 
     @Override
@@ -92,6 +99,8 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
             return next;
         }
     }
+
+    // Tree related methods
 
     abstract AbstractUser getChildAt(int i);
 
