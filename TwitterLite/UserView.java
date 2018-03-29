@@ -10,10 +10,14 @@ public class UserView {
     private JScrollPane tweetMessage_scroll, currentFollowing_scroll, newsFeed_scroll;
     private JTextArea tweetMessage, currentFollowing, newsFeed;
     private JButton followUser, postTweet;
+
+    private User currentUser;
     
-    public UserView() {
-        userViewFrame = new JFrame("User View");
-        userViewFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public UserView(User p_currentUser) {
+        currentUser = p_currentUser;
+
+        userViewFrame = new JFrame(currentUser.name);
+        userViewFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
         // ======================= JPanel Instantiation =======================
         primary = new JPanel();
@@ -87,11 +91,13 @@ public class UserView {
 
     public class followUserAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            // currentUser.follow(); /* TODO: currentUser should be able to enter another User's ID and follow them */
         }
     }
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            currentUser.spawnMessage(tweetMessage.getText());
         }
     }
 }

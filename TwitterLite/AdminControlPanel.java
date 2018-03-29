@@ -1,3 +1,4 @@
+import com.sun.xml.internal.bind.v2.TODO;
 import sun.reflect.generics.tree.Tree;
 
 import java.awt.*;
@@ -19,7 +20,6 @@ public class AdminControlPanel {
     private TreeNodeAdapter root;
     private DefaultTreeModel model;
     private UserGroup ugRoot = new UserGroup("Root");
-    private UserGroup currentGroup;
     private JButton addUser, addGroup, showUserTotal, showGroupTotal, showMessageTotal, showPositivePercent, openUserView;
 
     public AdminControlPanel() {
@@ -30,7 +30,7 @@ public class AdminControlPanel {
         model = (DefaultTreeModel)tree.getModel();
 
         adminCtrFrame = new JFrame("Admin Control Panel");
-        adminCtrFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        adminCtrFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // ======================= JPanel Instantiation =======================
         primary = new JPanel();
@@ -117,15 +117,20 @@ public class AdminControlPanel {
             ugRoot.spawnUserGroup(userID.getText());
             ugRoot.acceptVisitor(new TestVisitor());
 
-            try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
+            try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
+
+            //try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
     public class addGroupAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             ugRoot.spawnUserGroup(groupID.getText());
+            model.reload();
 
-            try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
+            try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
+
+            //try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
@@ -151,6 +156,7 @@ public class AdminControlPanel {
 
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
         }
     }
 
@@ -158,20 +164,13 @@ public class AdminControlPanel {
         public void valueChanged(TreeSelectionEvent se) {
             tree = (JTree) se.getSource();
 
+            // if(selected node is NOT a User)
             ugRoot = (UserGroup) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject();
 
-            // ========= CLEAN UP LATER =========
             //System.out.println(tree.getLastSelectedPathComponent());
-            //System.out.println(tree.getLastSelectedPathComponent().toString());
-            //System.out.println(tree.getLastSelectedPathComponent().getClass());
-            //ugRoot = (UserGroup) tree.getLastSelectedPathComponent();
-
-            //root = (TreeNodeAdapter)tree.getLastSelectedPathComponent();
-            //TreeNodeAdapter selectedNode = (TreeNodeAdapter) tree.getLastSelectedPathComponent();
-
             //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject(); // *******
-            //System.out.println(u);
-            // ==================================
+
+            /* TODO: fix having to close then open the 'subfolder' you're currently adding to to get the new nodes to show up.*/
         }
     }
 }
