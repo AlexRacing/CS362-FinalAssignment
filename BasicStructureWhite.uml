@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="922.75" y="100.0">TreeNodeAdapter</node>
+    <node x="1263.1208333333334" y="100.0">AbstractUser</node>
+    <node x="459.0" y="415.0">AdminControlPanel</node>
+    <node x="135.0" y="100.0">TestVisitor</node>
+    <node x="1119.0" y="495.0">UserView.postTweetAL</node>
+    <node x="1254.0" y="495.0">UserView.followUserAL</node>
+    <node x="0.0" y="505.0">AdminControlPanel.addGroupAL</node>
+    <node x="258.0" y="100.0">StringStructureAggregatorVisitor</node>
+    <node x="1280.3708333333334" y="260.0">UserGroup</node>
+    <node x="931.0" y="505.0">AdminControlPanel.showGroupTotalAL</node>
+    <node x="1261.8708333333334" y="340.0">UserGroup.UserGroupIterator</node>
+    <node x="470.3500000000002" y="180.0">MessageAggregationFilter</node>
+    <node x="941.75" y="0.0">IObserver</node>
+    <node x="1167.3708333333334" y="180.0">AbstractCompositeUser</node>
+    <node x="641.0" y="100.0">MessageAggregationVisitor</node>
+    <node x="881.3708333333333" y="180.0">SimpleAggregationVisitor</node>
+    <node x="16.5" y="580.0">SentimentEngine</node>
+    <node x="489.0" y="100.0">StatisticsTracker</node>
+    <node x="620.0" y="505.0">AdminControlPanel.showPositivePercentAL</node>
+    <node x="0.0" y="100.0">SimpleVisitor</node>
+    <node x="576.6208333333333" y="0.0">IObservable</node>
+    <node x="655.3708333333333" y="260.0">MessageTimeAggregationFilter</node>
+    <node x="1274.8708333333334" y="0.0">IUserVisitable</node>
+    <node x="130.0" y="505.0">AdminControlPanel.openUserViewAL</node>
+    <node x="0.0" y="660.0">SimpleSentimentEngine</node>
+    <node x="1413.8708333333334" y="0.0">UUIDed</node>
+    <node x="1353.3708333333334" y="180.0">User</node>
+    <node x="1433.6208333333334" y="100.0">Message</node>
+    <node x="463.0" y="505.0">AdminControlPanel.showUserTotalAL</node>
+    <node x="1195.5" y="415.0">UserView</node>
+    <node x="223.37083333333328" y="260.0">FollowingAggregationFilter</node>
+    <node x="285.0" y="505.0">AdminControlPanel.showMessageTotalAL</node>
+    <node x="211.0" y="580.0">UUIDManager</node>
+    <node x="427.3708333333333" y="260.0">UserCollectionAggregationFilter</node>
+    <node x="879.3708333333333" y="260.0">LimitedAggregationVisitor</node>
+    <node x="1078.3708333333334" y="260.0">AbstractCompositeUser.CompositeUserEnumerator</node>
+    <node x="807.0" y="505.0">AdminControlPanel.addUserAL</node>
+    <node x="325.6208333333334" y="0.0">IUserVisitor</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="MessageAggregationVisitor" target="IObserver">
+      <point x="46.5" y="-15.0" />
+      <point x="780.5" y="80.0" />
+      <point x="958.25" y="80.0" />
+      <point x="-33.0" y="15.0" />
+    </edge>
+    <edge source="StringStructureAggregatorVisitor" target="IUserVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="363.5" y="80.0" />
+      <point x="379.6208333333334" y="80.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="AbstractCompositeUser" target="AbstractUser">
+      <point x="0.0" y="-15.0" />
+      <point x="1250.3708333333334" y="155.0" />
+      <point x="1291.6208333333334" y="155.0" />
+      <point x="-28.5" y="15.0" />
+    </edge>
+    <edge source="UserCollectionAggregationFilter" target="MessageAggregationFilter">
+      <point x="0.0" y="-15.0" />
+      <point x="531.3708333333333" y="235.0" />
+      <point x="560.3500000000001" y="235.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="User" target="AbstractUser">
+      <point x="0.0" y="-15.0" />
+      <point x="1389.8708333333334" y="155.0" />
+      <point x="1348.6208333333334" y="155.0" />
+      <point x="28.5" y="15.0" />
+    </edge>
+    <edge source="TreeNodeAdapter" target="IObserver">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="MessageTimeAggregationFilter" target="MessageAggregationFilter">
+      <point x="0.0" y="-15.0" />
+      <point x="757.3708333333333" y="235.0" />
+      <point x="620.3500000000001" y="235.0" />
+      <point x="60.0" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.showPositivePercentAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="703.5" y="485.0" />
+      <point x="552.2142857142857" y="485.0" />
+      <point x="20.714285714285666" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.openUserViewAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="197.5" y="475.0" />
+      <point x="490.07142857142856" y="475.0" />
+      <point x="-41.428571428571445" y="15.0" />
+    </edge>
+    <edge source="UserGroup" target="AbstractCompositeUser">
+      <point x="0.0" y="-15.0" />
+      <point x="1331.3708333333334" y="235.0" />
+      <point x="1291.8708333333334" y="235.0" />
+      <point x="41.5" y="15.0" />
+    </edge>
+    <edge source="StatisticsTracker" target="IObservable">
+      <point x="33.0" y="-15.0" />
+      <point x="588.0" y="80.0" />
+      <point x="604.1208333333333" y="80.0" />
+      <point x="-27.5" y="15.0" />
+    </edge>
+    <edge source="TestVisitor" target="IUserVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="186.5" y="80.0" />
+      <point x="358.02083333333337" y="80.0" />
+      <point x="-21.600000000000023" y="15.0" />
+    </edge>
+    <edge source="SimpleSentimentEngine" target="SentimentEngine">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="FollowingAggregationFilter" target="MessageAggregationFilter">
+      <point x="0.0" y="-15.0" />
+      <point x="315.3708333333333" y="235.0" />
+      <point x="500.3500000000002" y="235.0" />
+      <point x="-60.0" y="15.0" />
+    </edge>
+    <edge source="AbstractUser" target="IObserver">
+      <point x="-14.25" y="-15.0" />
+      <point x="1305.8708333333334" y="50.0" />
+      <point x="1024.25" y="50.0" />
+      <point x="33.0" y="15.0" />
+    </edge>
+    <edge source="AbstractUser" target="IUserVisitable">
+      <point x="14.25" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="UserView.postTweetAL" target="UserView">
+      <point x="0.0" y="-15.0" />
+      <point x="1176.5" y="470.0" />
+      <point x="1220.0" y="470.0" />
+      <point x="-24.5" y="15.0" />
+    </edge>
+    <edge source="Message" target="UUIDed">
+      <point x="0.0" y="-15.0" />
+      <point x="22.25" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.showMessageTotalAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="364.0" y="485.0" />
+      <point x="510.7857142857143" y="485.0" />
+      <point x="-20.714285714285722" y="15.0" />
+    </edge>
+    <edge source="SimpleAggregationVisitor" target="MessageAggregationVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="968.8708333333333" y="155.0" />
+      <point x="780.5" y="155.0" />
+      <point x="46.5" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.showGroupTotalAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="1002.5" y="465.0" />
+      <point x="593.6428571428571" y="465.0" />
+      <point x="62.14285714285711" y="15.0" />
+    </edge>
+    <edge source="AbstractUser" target="UUIDed">
+      <point x="42.75" y="-15.0" />
+      <point x="1362.8708333333334" y="80.0" />
+      <point x="1436.1208333333334" y="80.0" />
+      <point x="-22.25" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.showUserTotalAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="UserGroup.UserGroupIterator" target="UserGroup">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="LimitedAggregationVisitor" target="SimpleAggregationVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="AbstractCompositeUser.CompositeUserEnumerator" target="AbstractCompositeUser">
+      <point x="0.0" y="-15.0" />
+      <point x="1169.3708333333334" y="235.0" />
+      <point x="1208.8708333333334" y="235.0" />
+      <point x="-41.5" y="15.0" />
+    </edge>
+    <edge source="SimpleVisitor" target="IUserVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="57.5" y="70.0" />
+      <point x="336.42083333333335" y="70.0" />
+      <point x="-43.19999999999999" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.addUserAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="859.0" y="475.0" />
+      <point x="572.9285714285714" y="475.0" />
+      <point x="41.428571428571445" y="15.0" />
+    </edge>
+    <edge source="AdminControlPanel.addGroupAL" target="AdminControlPanel">
+      <point x="0.0" y="-15.0" />
+      <point x="55.0" y="465.0" />
+      <point x="469.35714285714283" y="465.0" />
+      <point x="-62.14285714285717" y="15.0" />
+    </edge>
+    <edge source="MessageAggregationFilter" target="MessageAggregationVisitor">
+      <point x="0.0" y="-15.0" />
+      <point x="560.3500000000001" y="155.0" />
+      <point x="687.5" y="155.0" />
+      <point x="-46.5" y="15.0" />
+    </edge>
+    <edge source="AbstractUser" target="IObservable">
+      <point x="-42.75" y="-15.0" />
+      <point x="1277.3708333333334" y="60.0" />
+      <point x="659.1208333333333" y="60.0" />
+      <point x="27.5" y="15.0" />
+    </edge>
+    <edge source="UserView.followUserAL" target="UserView">
+      <point x="0.0" y="-15.0" />
+      <point x="1312.5" y="470.0" />
+      <point x="1269.0" y="470.0" />
+      <point x="24.5" y="15.0" />
+    </edge>
+    <edge source="MessageAggregationVisitor" target="IUserVisitor">
+      <point x="-46.5" y="-15.0" />
+      <point x="687.5" y="70.0" />
+      <point x="422.8208333333334" y="70.0" />
+      <point x="43.19999999999999" y="15.0" />
+    </edge>
+    <edge source="StatisticsTracker" target="IUserVisitor">
+      <point x="-33.0" y="-15.0" />
+      <point x="522.0" y="80.0" />
+      <point x="401.2208333333334" y="80.0" />
+      <point x="21.600000000000023" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="754.5" y="338.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

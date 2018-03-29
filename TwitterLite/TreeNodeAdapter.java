@@ -9,6 +9,8 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
     protected TreeNodeAdapter(AbstractUser content) {
         super(content, content instanceof AbstractCompositeUser);
+        content.attachObserver(this);
+        //System.out.println("Created: "+this.toDetailedString());
     }
 
     protected TreeNodeAdapter(AbstractUser content, boolean populate) {
@@ -17,6 +19,7 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
         if (populate && content instanceof AbstractCompositeUser) {
             ((AbstractCompositeUser) content).children().forEach(this::populate);
         }
+        //System.out.println(((populate)?"Populated: ":"Created: ")+this.toDetailedString());
     }
 
     public void add(AbstractUser abstractUser) {
@@ -29,6 +32,7 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
     public void add(AbstractUser abstractUser, boolean populate) {
         super.add(new TreeNodeAdapter(abstractUser, populate));
+        //System.out.println(this+((populate) ? " Populated " : " Added: ")+abstractUser);
     }
 
     public void addIfMissing(AbstractUser abstractUser) {
@@ -40,12 +44,13 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     }
 
     public void addIfMissing(AbstractUser abstractUser, boolean populate) {
-        if (!childContains(abstractUser)) {
+        if (!anyChildContains(abstractUser)) {
             super.add(new TreeNodeAdapter(abstractUser, populate));
         }
     }
 
     protected void rebind() {
+        //System.out.println(this+" rebinding...");
         Object o = getUserObject();
         if (o == null || !(o instanceof AbstractUser)) return;
 
@@ -65,26 +70,28 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
         if (o instanceof AbstractCompositeUser) {
             AbstractCompositeUser composite = (AbstractCompositeUser) o;
-            if (childContains(u) && !composite.children().contains(u)) remove(u);
-            else if (!composite.children().contains(u)) this.populate(u);
+            if (anyChildContains(u) && !composite.children().contains(u)) remove(u);
+            else if (composite.children().contains(u)) this.populate(u);
         }
     }
 
     @Override
     public String toString() {
         if (getUserObject() instanceof AbstractUser) {
-            return ((AbstractUser) getUserObject()).getName();
+            return ((AbstractUser) getUserObject()).getName();//+'*'
         }
         return getUserObject().toString();
     }
 
     @Override
     public void update() {
+        //System.out.println(this+" updated...");
         rebind();
     }
 
     @Override
     public void update(IObservable source) {
+        //System.out.println(this+" updated by "+source);
         Object o = getUserObject();
         if (o == null || !(o instanceof AbstractUser)) return;
         if (source.equals(o)) rebind();
@@ -92,10 +99,11 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
 
     @Override
     public void update(IObservable source, Object content) {
+        //System.out.println(this+" updated by "+source+" with "+content);
         Object o = getUserObject();
         if (o == null || !(o instanceof AbstractUser)) return;
         if (source.equals(o)) {
-            if (content instanceof AbstractUser && childContains(content)) {
+            if (content instanceof AbstractUser && inContentsChildren(content)) {
                 addIfMissing((AbstractUser) content);
             } else {
                 this.remove(content);
@@ -103,18 +111,27 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
         }
     }
 
-    protected boolean childContains(Object o) {
+    protected boolean inContentsChildren(Object o) {
+        Object uo = this.getUserObject();
+        if (uo instanceof AbstractCompositeUser) {
+            AbstractCompositeUser u = (AbstractCompositeUser) uo;
+            return u.children().contains(o);
+        }
+        return false;
+    }
+
+    protected boolean anyChildContains(Object o) {
         if (this.getChildCount() > 0 && this.children != null) {
             return this.children.stream().anyMatch(c -> (c instanceof TreeNodeAdapter) &&
-                                                        o.equals(((TreeNodeAdapter) c)
-                                                                         .getUserObject()));
+                                                        ((TreeNodeAdapter) c)
+                                                                .getUserObject().equals(o));
         }
         return false;
     }
 
     protected void remove(Object o) {
         for (Object c : this.children) {
-            if ((c instanceof TreeNodeAdapter) && o.equals(((TreeNodeAdapter) c).getUserObject())) {
+            if ((c instanceof TreeNodeAdapter) && ((TreeNodeAdapter) c).getUserObject().equals(o)) {
                 this.remove((TreeNodeAdapter) c);
                 break;
             }
@@ -134,5 +151,14 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     public void setUserObject(Object o) {
         super.setUserObject(o);
         rebind();
+    }
+
+    public String toDetailedString() {
+        return super.toString()+"{" +
+               "in " + parent +
+               " containing " + children +
+               " wrapping " + userObject +
+               " fillable: " + allowsChildren +
+               '}';
     }
 }

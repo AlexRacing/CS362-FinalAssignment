@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -110,14 +109,17 @@ public class AdminControlPanel {
 
     public class addUserAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            root.add(new TreeNodeAdapter(ugRoot.spawnUser(userID.getText())));
-            ugRoot.acceptVisitor(new TestVisitor());
+            //root.add(new TreeNodeAdapter(ugRoot.spawnUser(userID.getText())));
+            ugRoot.spawnUser(userID.getText());
+            //ugRoot.acceptVisitor(new TestVisitor());
         }
     }
 
     public class addGroupAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            root.add(new TreeNodeAdapter(ugRoot.spawnUserGroup(groupID.getText())));
+            //root.add(new TreeNodeAdapter(ugRoot.spawnUserGroup(groupID.getText())));
+            ugRoot.spawnUserGroup(groupID.getText());
+            //ugRoot.acceptVisitor(new TestVisitor());
         }
     }
 

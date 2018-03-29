@@ -67,7 +67,12 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
     // Observer related methods
 
     public void attachObserver(IObserver obs) {
-        if (!this.observers.contains(obs)) this.observers.add(obs);
+        //System.out.print(this.name+" attaching "+obs+"; ");
+        if (!this.observers.contains(obs)) {
+            this.observers.add(obs);
+            //System.out.println("Successful!");
+        }
+        //else System.out.println("Failed!");
     }
 
     public void detachObserver(IObserver obs) {
