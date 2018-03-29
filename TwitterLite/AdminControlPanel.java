@@ -111,6 +111,7 @@ public class AdminControlPanel {
     public class addUserAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             root.add(new TreeNodeAdapter(ugRoot.spawnUser(userID.getText())));
+            ugRoot.acceptVisitor(new TestVisitor());
         }
     }
 
