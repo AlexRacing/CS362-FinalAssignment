@@ -121,7 +121,7 @@ public class AdminControlPanel {
             String newName = userID.getText();
 
             // Do nothing if the name is taken
-            if (Tracker.getInstance().userNameTaken(newName)) {
+            if (LookupEngine.getInstance().userNameTaken(newName)) {
                 JOptionPane.showMessageDialog(adminCtrFrame, "Name taken, please choose another.");
                 return;
             }
@@ -147,7 +147,7 @@ public class AdminControlPanel {
             String newName = groupID.getText();
 
             // Do nothing if the name is taken
-            if (Tracker.getInstance().userNameTaken(newName)) {
+            if (LookupEngine.getInstance().userNameTaken(newName)) {
                 JOptionPane.showMessageDialog(adminCtrFrame, "Name taken, please choose another.");
                 return;
             }

@@ -103,9 +103,9 @@ public class UserView {
 
             try {
                 int findID = Integer.parseInt(findText);
-                match = Tracker.getInstance().getUser(findID);//root.getUserByID(findID);
+                match = LookupEngine.getInstance().getUser(findID);//root.getUserByID(findID);
             } catch (NumberFormatException e) {
-                match = Tracker.getInstance().getUser(findText);
+                match = LookupEngine.getInstance().getUser(findText);
             }
 
             if (match != null && match instanceof User) {

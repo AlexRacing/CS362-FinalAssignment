@@ -5,8 +5,8 @@ import java.util.Map;
 /**
  * We haven't discussed this, but I think it's likely necessary.
  */
-public class Tracker implements IUserVisitor, IObservable {
-    private static Tracker instance = new Tracker();
+public class LookupEngine implements IUserVisitor, IObservable {
+    private static LookupEngine instance = new LookupEngine();
 
     // Observable dependencies
     private ArrayList<IObserver> observers;
@@ -16,14 +16,14 @@ public class Tracker implements IUserVisitor, IObservable {
     private final Map<Integer, UUIDed>      idMap;
     //private final Map<Integer, Message>      messageMap;
 
-    private Tracker() {
+    private LookupEngine() {
         this.observers = new ArrayList<>();
         nameMap = new HashMap<>();
         idMap = new HashMap<>();
         //messageMap = new HashMap<>();
     }
 
-    public static Tracker getInstance() {
+    public static LookupEngine getInstance() {
         return instance;
     }
 
