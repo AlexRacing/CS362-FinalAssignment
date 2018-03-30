@@ -119,7 +119,10 @@ public class AdminControlPanel {
             String newName = userID.getText();
 
             // Do nothing if the name is taken
-            if (UserFinder.getInstance().userNameTaken(newName)) return;
+            if (UserFinder.getInstance().userNameTaken(newName)) {
+                JOptionPane.showMessageDialog(adminCtrFrame, "Name taken, please choose another.");
+                return;
+            }
 
             try {
                 ((UserGroup) ugRoot).spawnUser(newName);
