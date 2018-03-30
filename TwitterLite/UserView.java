@@ -11,14 +11,14 @@ public class UserView {
     private JPanel primary, top, middleTop, middleBottom, bottom;
     private JTextField userID;
     private JScrollPane tweetMessage_scroll, currentFollowing_scroll, newsFeed_scroll;
-    private JTextArea tweetMessage, currentFollowing, newsFeed;
+    private JList currentFollowing, newsFeed;
+    private JTextArea tweetMessage;
     private JButton followUser, postTweet;
 
     private AbstractUser currentUser;
     
     public UserView(AbstractUser p_currentUser) {
         currentUser = p_currentUser;
-        //currentUser = (User)currentUser;
 
         userViewFrame = new JFrame(currentUser.name);
         userViewFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -63,7 +63,7 @@ public class UserView {
         // ====================================================================
         
         // ======================= middleTop Components =======================
-        currentFollowing = new JTextArea(10, 20);
+        currentFollowing = new JList(new DefaultListModel());
         currentFollowing_scroll = new JScrollPane(currentFollowing);
         
         middleTop.add(currentFollowing_scroll);
@@ -81,10 +81,10 @@ public class UserView {
         // ====================================================================
         
         // ======================== bottom Components =========================
-        newsFeed = new JTextArea(10, 20);
+        newsFeed = new JList(new DefaultListModel());
         newsFeed_scroll = new JScrollPane(newsFeed);
         
-        bottom.add(newsFeed);
+        bottom.add(newsFeed_scroll);
         // ====================================================================
         
         userViewFrame.setResizable(false); // prevents the frame from being resized by the users
@@ -111,7 +111,12 @@ public class UserView {
                 match = UserFinder.getInstance().get(findText);
             }
 
-            if (match != null && match instanceof User) ((User) currentUser).follow((User) match);
+            if (match != null && match instanceof User) {
+                ((User) currentUser).follow((User) match);
+                //for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
+                    //currentFollowing.add(((User) currentUser).getFollowing().get(i).toString());
+                // here
+            }
 
             //((User) currentUser).getFollowing().forEach(System.out::println);
         }
