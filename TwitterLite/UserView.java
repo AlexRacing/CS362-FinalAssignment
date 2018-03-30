@@ -2,9 +2,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import java.util.Iterator;
-import java.util.function.Consumer;
-import javax.swing.text.html.HTMLDocument;
 
 public class UserView {
     private JFrame userViewFrame;
@@ -106,15 +103,15 @@ public class UserView {
 
             try {
                 int findID = Integer.parseInt(findText);
-                match = UserFinder.getInstance().get(findID);//root.getUserByID(findID);
+                match = LookupEngine.getInstance().getUser(findID);//root.getUserByID(findID);
             } catch (NumberFormatException e) {
-                match = UserFinder.getInstance().get(findText);
+                match = LookupEngine.getInstance().getUser(findText);
             }
 
             if (match != null && match instanceof User) {
                 ((User) currentUser).follow((User) match);
                 //for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
-                    //currentFollowing.add(((User) currentUser).getFollowing().get(i).toString());
+                    //currentFollowing.add(((User) currentUser).getFollowing().getUser(i).toString());
                 // here
             }
 

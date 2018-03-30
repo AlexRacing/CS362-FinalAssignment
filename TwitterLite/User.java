@@ -1,11 +1,8 @@
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-
-import javax.swing.tree.TreeNode;
 
 /**
  * Class representing a users. Participant in Visitor, Observer, Composite and Iterator patterns.
@@ -50,7 +47,7 @@ public class User extends AbstractUser implements Iterable<Message> {
         Message newMessage = new Message(this, message);
         this.messages.add(newMessage);
         StatisticsTracker.getInstance().count(newMessage);
-        Tracker.getInstance().register(newMessage);
+        LookupEngine.getInstance().register(newMessage);
         notifyObservers(newMessage);
 
         return newMessage;

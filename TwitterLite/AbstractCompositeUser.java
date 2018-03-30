@@ -28,7 +28,7 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
         User newUser = new User(name, this);
         this.add(newUser);
         StatisticsTracker.getInstance().count(newUser);
-        Tracker.getInstance().register(newUser);
+        LookupEngine.getInstance().register(newUser);
         return newUser;
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
         UserGroup newGroup = new UserGroup(name, this);
         this.add(newGroup);
         StatisticsTracker.getInstance().count(newGroup);
-        Tracker.getInstance().register(newGroup);
+        LookupEngine.getInstance().register(newGroup);
         return newGroup;
     }
 
