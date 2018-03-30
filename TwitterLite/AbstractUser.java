@@ -80,6 +80,7 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
 
     // Observer related methods
 
+    @Override
     public void attachObserver(IObserver obs) {
         //System.out.print(this.name+" attaching "+obs+"; ");
         if (!this.observers.contains(obs)) {
@@ -89,14 +90,17 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
         //else System.out.println("Failed!");
     }
 
+    @Override
     public void detachObserver(IObserver obs) {
         this.observers.remove(obs);
     }
 
+    @Override
     public void notifyObservers() {
         for (IObserver obs : this.observers) obs.update(this);
     }
 
+    @Override
     public void notifyObservers(Object content) {
         for (IObserver obs : this.observers) obs.update(this, content);
     }

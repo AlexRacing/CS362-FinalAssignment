@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -6,9 +7,12 @@ import java.util.Queue;
  * Abstract implementation of a message aggregator, as a visitor, implementing the
  * Template Method pattern and participant in the Decorator pattern.
  */
-public abstract class MessageAggregationVisitor implements IUserVisitor, IObserver {
+public abstract class MessageAggregationVisitor implements IUserVisitor, IObserver, IObservable {
     // The users seen and most recent messages aggregated from that users.
-    protected final Map<User, Message> seen;
+    protected final Map<User, Message>   seen;
+
+    // Observable dependencies
+    protected       ArrayList<IObserver> observers;
 
     public MessageAggregationVisitor() {
         this.seen = new HashMap<>();
@@ -22,6 +26,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     @Override
     public void update() {
         this.seen.keySet().forEach(this::visit);
+        this.notifyObservers();
     }
 
     @Override
@@ -33,6 +38,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
                 this.seen.remove(u);
             } else this.visit(u);
         }
+        this.notifyObservers();
     }
 
     @Override
@@ -40,6 +46,34 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
         if (content instanceof Message) {
             this.newMessage((Message) content);
         }
+        this.notifyObservers();
+    }
+
+    // Observer related methods
+
+    @Override
+    public void attachObserver(IObserver obs) {
+        //System.out.print(this.name+" attaching "+obs+"; ");
+        if (!this.observers.contains(obs)) {
+            this.observers.add(obs);
+            //System.out.println("Successful!");
+        }
+        //else System.out.println("Failed!");
+    }
+
+    @Override
+    public void detachObserver(IObserver obs) {
+        this.observers.remove(obs);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (IObserver obs : this.observers) obs.update(this);
+    }
+
+    @Override
+    public void notifyObservers(Object content) {
+        for (IObserver obs : this.observers) obs.update(this, content);
     }
 
     /**
