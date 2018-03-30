@@ -145,13 +145,12 @@ public class AdminControlPanel {
     }
 
     public class showUserTotalAL implements ActionListener {
-        private int userTotal = 0;
-
         public void actionPerformed(ActionEvent event) {
             JOptionPane.showMessageDialog(adminCtrFrame, getUserTotal(PERMANENT_ROOT));
         }
 
         private int getUserTotal(AbstractUser currentNode) {
+            int userTotal = 0;
             for (int i = 0; i < currentNode.getChildCount(); i++) {
                 if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
                     userTotal++;
@@ -166,13 +165,12 @@ public class AdminControlPanel {
     }
 
     public class showGroupTotalAL implements ActionListener {
-        private int groupTotal = 0;
-
         public void actionPerformed(ActionEvent event) {
             JOptionPane.showMessageDialog(adminCtrFrame, getGroupTotal(PERMANENT_ROOT));
         }
 
         private int getGroupTotal(AbstractUser currentNode) {
+            int groupTotal = 0;
             for (int i = 0; i < currentNode.getChildCount(); i++) {
                 if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
                     groupTotal++;
@@ -186,8 +184,6 @@ public class AdminControlPanel {
     }
 
     public class showMessageTotalAL implements ActionListener {
-        private int messageTotal = 0;
-
         public void actionPerformed(ActionEvent event) {
             /*
             int messageTotal = 0;
@@ -202,6 +198,7 @@ public class AdminControlPanel {
         }
 
         private int getMessageTotal(AbstractUser currentNode) {
+            int messageTotal = 0;
             for (int i = 0; i < currentNode.getChildCount(); i++) {
                 if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
                     messageTotal += ((User) ((UserGroup)currentNode).getChildAt(i)).getMessages().size();
