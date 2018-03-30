@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.util.Iterator;
+import java.util.function.Consumer;
+import javax.swing.text.html.HTMLDocument;
 
 public class UserView {
     private JFrame userViewFrame;
@@ -15,6 +18,7 @@ public class UserView {
     
     public UserView(AbstractUser p_currentUser) {
         currentUser = p_currentUser;
+        //currentUser = (User)currentUser;
 
         userViewFrame = new JFrame(currentUser.name);
         userViewFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -90,14 +94,26 @@ public class UserView {
     }
 
     public class followUserAL implements ActionListener {
+
+        private User match;
+
         public void actionPerformed(ActionEvent event) {
-            // currentUser.follow(); /* TODO: currentUser should be able to enter another User's ID and follow them */
+            //((User) currentUser).getUUID();
+            // TODO: currentUser should be able to enter another User's ID and follow them
+
+            AbstractUser parent = currentUser;
+            while(parent.getParent() != null)
+                parent = parent.getParent();
+
+            match = new User("biiifaifidsfidsaifdsa");
+
+            ((User) currentUser).follow(match);
         }
     }
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            //currentUser.spawnMessage(tweetMessage.getText());
+            ((User) currentUser).spawnMessage(tweetMessage.getText());
         }
     }
 }

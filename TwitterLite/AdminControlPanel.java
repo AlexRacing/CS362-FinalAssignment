@@ -19,7 +19,7 @@ public class AdminControlPanel {
     private JTree tree;
     private TreeNodeAdapter root;
     private DefaultTreeModel model;
-    private UserGroup ugRoot = new UserGroup("Root");
+    private AbstractUser ugRoot = new UserGroup("Root");
     private JButton addUser, addGroup, showUserTotal, showGroupTotal, showMessageTotal, showPositivePercent, openUserView;
 
     public AdminControlPanel() {
@@ -114,7 +114,7 @@ public class AdminControlPanel {
 
     public class addUserAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            ugRoot.spawnUserGroup(userID.getText());
+            ((UserGroup)ugRoot).spawnUser(userID.getText());
             ugRoot.acceptVisitor(new TestVisitor());
 
             try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
@@ -125,12 +125,10 @@ public class AdminControlPanel {
 
     public class addGroupAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            ugRoot.spawnUserGroup(groupID.getText());
+            ((UserGroup)ugRoot).spawnUserGroup(groupID.getText());
             model.reload();
 
             try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
-
-            //try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
@@ -157,7 +155,12 @@ public class AdminControlPanel {
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             //UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
-            UserView uv = new UserView((AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
+            //if((((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject()) instanceof User)
+            try {
+                UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
+            } catch (ClassCastException ccE) {
+                System.out.println("");
+            }
         }
     }
 
@@ -166,7 +169,7 @@ public class AdminControlPanel {
             tree = (JTree) se.getSource();
 
             // if(selected node is NOT a User)
-            ugRoot = (UserGroup) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject();
+            ugRoot = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject();
 
             //System.out.println(tree.getLastSelectedPathComponent());
             //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject(); // *******
