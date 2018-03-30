@@ -111,6 +111,8 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
             }
             this.seen.put(user, lastSeen); // The users has now been seen
         }
+
+        notifyObservers();
     }
 
     /**
@@ -119,7 +121,10 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
      * @param message Message to consider
      */
     public void newMessage(Message message) {
-        if (!this.shouldSkip(message.getOP())) this.consider(message);
+        if (!this.shouldSkip(message.getOP())) {
+            this.consider(message);
+            this.notifyObservers();
+        }
     }
 
     // Template method related methods
