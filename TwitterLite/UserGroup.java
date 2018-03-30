@@ -115,13 +115,6 @@ public class UserGroup extends AbstractCompositeUser { //
         return this.contents.contains(o) || subContains(o);
     }
 
-    public boolean subContains(Object o) {
-        for (AbstractUser u : this.contents) {
-            if (u instanceof UserGroup && ((UserGroup) u).contains(o)) return true;
-        }
-        return false;
-    }
-
     @Override
     public Iterator<User> iterator() {
         return new UserGroupIterator();

@@ -7,6 +7,7 @@ public class TestSentiment {
          Test 3: 0.130958
          Test 4: -0.04132333333333333
          Test 5: 0.149815
+         Test 6: -0.08264666666666666
      *
      * @param args
      */
@@ -23,5 +24,7 @@ public class TestSentiment {
         System.out.println("Test 4: "+engine.sentimentScore("Trump isn't terrible."));
 
         System.out.println("Test 5: "+engine.sentimentScore("Truth is a lie."));
+
+        System.out.println("Test 6: "+engine.sentimentScore("Trump Trump Trump!"));
     }
 }

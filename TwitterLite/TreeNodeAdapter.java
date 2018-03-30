@@ -103,15 +103,18 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
         Object o = getUserObject();
         if (o == null || !(o instanceof AbstractUser)) return;
         if (source.equals(o)) {
-            if (content instanceof AbstractUser && inContentsChildren(content)) {
-                addIfMissing((AbstractUser) content);
-            } else {
-                this.remove(content);
+            if (content instanceof AbstractUser) {
+                if (inContentsChildren(content)) {
+                    addIfMissing((AbstractUser) content);
+                } else if (anyChildContains(content)) {
+                    this.remove(content);
+                }
             }
         }
     }
 
     protected boolean inContentsChildren(Object o) {
+        if (o == null) return false;
         Object uo = this.getUserObject();
         if (uo instanceof AbstractCompositeUser) {
             AbstractCompositeUser u = (AbstractCompositeUser) uo;
@@ -121,6 +124,7 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     }
 
     protected boolean anyChildContains(Object o) {
+        if (o == null) return false;
         if (this.getChildCount() > 0 && this.children != null) {
             return this.children.stream().anyMatch(c -> (c instanceof TreeNodeAdapter) &&
                                                         ((TreeNodeAdapter) c)
@@ -130,6 +134,7 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     }
 
     protected void remove(Object o) {
+        if (o == null) return;
         for (Object c : this.children) {
             if ((c instanceof TreeNodeAdapter) && ((TreeNodeAdapter) c).getUserObject().equals(o)) {
                 this.remove((TreeNodeAdapter) c);
@@ -139,6 +144,7 @@ public class TreeNodeAdapter extends DefaultMutableTreeNode implements IObserver
     }
 
     protected void retainIf(Collection collection) {
+        if (collection == null) return;
         for (Object c : this.children) {
             if ((c instanceof TreeNodeAdapter) &&
                 !collection.contains(((TreeNodeAdapter) c).getUserObject())) {

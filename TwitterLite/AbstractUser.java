@@ -38,9 +38,13 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
         return this.name;
     }
 
+    public boolean hasName(String name) {
+        return this.getName().equals(name);
+    }
+
     @Override
     public String toString() {
-        return this.name;
+        return this.getName();
     }
 
     public String toDetailedString() {
@@ -58,6 +62,16 @@ public abstract class AbstractUser extends UUIDed implements IObserver, IObserva
 
     public AbstractUser getParent() {
         return this.parent;
+    }
+
+    public AbstractCompositeUser getRoot() {
+        if (this.parent == null) {
+            if (this instanceof AbstractCompositeUser) return (AbstractCompositeUser) this;
+            else return null;
+        }
+        AbstractCompositeUser root = this.parent;
+        while (root.parent != null) root = root.parent;
+        return root;
     }
 
     public void removeFromParent() {

@@ -98,16 +98,22 @@ public class UserView {
         private User match;
 
         public void actionPerformed(ActionEvent event) {
-            //((User) currentUser).getUUID();
-            // TODO: currentUser should be able to enter another User's ID and follow them
+            if (!(currentUser instanceof User)) return;
 
-            AbstractUser parent = currentUser;
-            while(parent.getParent() != null)
-                parent = parent.getParent();
+            String findText = userID.getText();
+            AbstractCompositeUser root = currentUser.getRoot();
+            User match;
 
-            User match = searchForName(userID.getText(), (UserGroup)parent);
+            try {
+                int findID = Integer.parseInt(findText);
+                match = root.getUserByID(findID);
+            } catch (NumberFormatException e) {
+                match = root.getUserByName(findText);
+            }
 
-            ((User)currentUser).follow(match);
+            if (match != null) ((User) currentUser).follow(match);
+
+            //((User) currentUser).getFollowing().forEach(System.out::println);
         }
 
         private User searchForName(String name, UserGroup root)

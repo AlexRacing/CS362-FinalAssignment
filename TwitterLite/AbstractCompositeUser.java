@@ -36,6 +36,45 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
         return newGroup;
     }
 
+    public User getUserByName(String name) {
+        for (User u : this) if (u.hasName(name)) return u;
+        return null;
+    }
+
+    public AbstractUser getContentsByName(String name) {
+        for (AbstractUser u : this.children()) {
+            if (u.hasName(name)) return u;
+            if (u instanceof AbstractCompositeUser) {
+                AbstractUser subContent = ((AbstractCompositeUser) u).getContentsByName(name);
+                if (subContent != null) return subContent;
+            }
+        }
+        return null;
+    }
+
+    public User getUserByID(int id) {
+        for (User u : this) if (u.getUUID() == id) return u;
+        return null;
+    }
+
+    public AbstractUser getContentsByID(int id) {
+        for (AbstractUser u : this.children()) {
+            if (u.getUUID() == id) return u;
+            if (u instanceof AbstractCompositeUser) {
+                AbstractUser subContent = ((AbstractCompositeUser) u).getContentsByID(id);
+                if (subContent != null) return subContent;
+            }
+        }
+        return null;
+    }
+
+    public boolean subContains(Object o) {
+        for (AbstractUser u : this.children()) {
+            if (u instanceof AbstractCompositeUser && ((AbstractCompositeUser) u).contains(o)) return true;
+        }
+        return false;
+    }
+
     @Override
     public Object[] toArray() {
         return new ArrayList<>(this).toArray();
