@@ -112,8 +112,6 @@ public class AdminControlPanel {
         adminCtrFrame.getContentPane().add(primary);
         adminCtrFrame.pack();
         adminCtrFrame.setVisible(true);
-
-        loadDefaults(ROOT_UG); // TODO: remove this
     }
 
     public class addUserAL implements ActionListener {
@@ -240,7 +238,9 @@ public class AdminControlPanel {
         }
     }
 
-    private static void loadDefaults(AbstractCompositeUser root) {
+    void loadDefaults() {
+        UserGroup root = (UserGroup) ROOT_UG;
+
         UserGroup admin  = root.spawnUserGroup("Admin");
         UserGroup cs     = root.spawnUserGroup("CS");
         UserGroup cs3620 = cs.spawnUserGroup("CS-3620");
