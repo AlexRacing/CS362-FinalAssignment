@@ -156,7 +156,8 @@ public class AdminControlPanel {
 
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
+            //UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
+            UserView uv = new UserView((AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
         }
     }
 

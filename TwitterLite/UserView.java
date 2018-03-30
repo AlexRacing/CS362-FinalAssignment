@@ -11,9 +11,9 @@ public class UserView {
     private JTextArea tweetMessage, currentFollowing, newsFeed;
     private JButton followUser, postTweet;
 
-    private User currentUser;
+    private AbstractUser currentUser;
     
-    public UserView(User p_currentUser) {
+    public UserView(AbstractUser p_currentUser) {
         currentUser = p_currentUser;
 
         userViewFrame = new JFrame(currentUser.name);
@@ -97,7 +97,7 @@ public class UserView {
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            currentUser.spawnMessage(tweetMessage.getText());
+            //currentUser.spawnMessage(tweetMessage.getText());
         }
     }
 }
