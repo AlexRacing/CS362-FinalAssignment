@@ -7,6 +7,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.xml.ws.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class AdminControlPanel {
     private TreeNodeAdapter root;
     private DefaultTreeModel model;
     private AbstractUser ugRoot = new UserGroup("Root");
+    private final AbstractUser PERMANENT_ROOT = (UserGroup)ugRoot;
     private JButton addUser, addGroup, showUserTotal, showGroupTotal, showMessageTotal, showPositivePercent, openUserView;
 
     public AdminControlPanel() {
@@ -119,9 +121,13 @@ public class AdminControlPanel {
             // Do nothing if the name is taken
             if (UserFinder.getInstance().userNameTaken(newName)) return;
 
-            ((UserGroup)ugRoot).spawnUser(newName);
+            try {
+                ((UserGroup) ugRoot).spawnUser(newName);
+            } catch(ClassCastException ccE) {
+                JOptionPane.showMessageDialog(adminCtrFrame, "Cannot create a new User Group within a User.");
+            }
 
-            ugRoot.acceptVisitor(new TestVisitor()); // TODO: remove this later
+            //ugRoot.acceptVisitor(new TestVisitor()); // TODO: remove this later
 
             try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
 
@@ -139,22 +145,88 @@ public class AdminControlPanel {
     }
 
     public class showUserTotalAL implements ActionListener {
+        private int userTotal = 0;
+
         public void actionPerformed(ActionEvent event) {
+            JOptionPane.showMessageDialog(adminCtrFrame, getUserTotal(PERMANENT_ROOT));
+        }
+
+        private int getUserTotal(AbstractUser currentNode) {
+            for (int i = 0; i < currentNode.getChildCount(); i++) {
+                if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
+                    userTotal++;
+                }
+                else if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
+                    userTotal += getUserTotal(((UserGroup) currentNode).getChildAt(i));
+                }
+            }
+
+            return userTotal;
         }
     }
 
     public class showGroupTotalAL implements ActionListener {
+        private int groupTotal = 0;
+
         public void actionPerformed(ActionEvent event) {
+            JOptionPane.showMessageDialog(adminCtrFrame, getGroupTotal(PERMANENT_ROOT));
+        }
+
+        private int getGroupTotal(AbstractUser currentNode) {
+            for (int i = 0; i < currentNode.getChildCount(); i++) {
+                if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
+                    groupTotal++;
+                    if(currentNode.getChildCount() > 0)
+                        groupTotal += getGroupTotal(((UserGroup) currentNode).getChildAt(i));
+                }
+            }
+
+            return groupTotal;
         }
     }
 
     public class showMessageTotalAL implements ActionListener {
+        private int messageTotal = 0;
+
         public void actionPerformed(ActionEvent event) {
+            /*
+            int messageTotal = 0;
+            for(int i = 0 ; i < PERMANENT_ROOT.getChildCount() ; i++) {
+                if (((UserGroup)PERMANENT_ROOT).getChildAt(i) instanceof User) {
+                    messageTotal += ((User) ((UserGroup)PERMANENT_ROOT).getChildAt(i)).getMessages().size();
+                }
+            }
+            */
+
+            JOptionPane.showMessageDialog(adminCtrFrame, getMessageTotal(PERMANENT_ROOT));
+        }
+
+        private int getMessageTotal(AbstractUser currentNode) {
+            for (int i = 0; i < currentNode.getChildCount(); i++) {
+                if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
+                    messageTotal += ((User) ((UserGroup)currentNode).getChildAt(i)).getMessages().size();
+                }
+                else if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
+                    messageTotal += getMessageTotal(((UserGroup) currentNode).getChildAt(i));
+                }
+            }
+
+            return messageTotal;
         }
     }
 
     public class showPositivePercentAL implements ActionListener {
+        private double positivity = 0;
+        private SentimentEngine engine = SentimentEngine.getInstance();
+
         public void actionPerformed(ActionEvent event) {
+            //SentimentEngine engine = SentimentEngine.getInstance();
+            // basically the same as getting the messages except getting positivity from those messages
+            JOptionPane.showMessageDialog(adminCtrFrame, getPositivity(PERMANENT_ROOT));
+        }
+
+        private double getPositivity(AbstractUser currentNode) {
+            return positivity;
         }
     }
 
@@ -174,13 +246,15 @@ public class AdminControlPanel {
         public void valueChanged(TreeSelectionEvent se) {
             tree = (JTree) se.getSource();
 
-            // if(selected node is NOT a User)
-            ugRoot = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject();
+            TreeNodeAdapter currentNode = (TreeNodeAdapter) tree.getLastSelectedPathComponent();
+
+            // TODO: NullPointerException when adding a UserGroup to a UserGroup having clicked on the Destination UserGroup first
+            ugRoot = (AbstractUser) currentNode.getUserObject();
 
             //System.out.println(tree.getLastSelectedPathComponent());
             //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject(); // *******
 
-            /* TODO: fix having to close then open the 'subfolder' you're currently adding to to get the new nodes to show up.*/
+            // TODO: fix having to close then open the 'subfolder' you're currently adding to to get the new nodes to show up.
         }
     }
 }
