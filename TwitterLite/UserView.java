@@ -101,17 +101,17 @@ public class UserView {
             if (!(currentUser instanceof User)) return;
 
             String findText = userID.getText();
-            AbstractCompositeUser root = currentUser.getRoot();
-            User match;
+            //AbstractCompositeUser root = currentUser.getRoot();
+            AbstractUser match;
 
             try {
                 int findID = Integer.parseInt(findText);
-                match = root.getUserByID(findID);
+                match = UserFinder.getInstance().get(findID);//root.getUserByID(findID);
             } catch (NumberFormatException e) {
-                match = root.getUserByName(findText);
+                match = UserFinder.getInstance().get(findText);
             }
 
-            if (match != null) ((User) currentUser).follow(match);
+            if (match != null && match instanceof User) ((User) currentUser).follow((User) match);
 
             //((User) currentUser).getFollowing().forEach(System.out::println);
         }

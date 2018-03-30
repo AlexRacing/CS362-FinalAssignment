@@ -27,12 +27,16 @@ public abstract class AbstractCompositeUser extends AbstractUser implements Coll
     public User spawnUser(String name) {
         User newUser = new User(name, this);
         this.add(newUser);
+        StatisticsTracker.getInstance().count(newUser);
+        UserFinder.getInstance().register(newUser);
         return newUser;
     }
 
     public UserGroup spawnUserGroup(String name) {
         UserGroup newGroup = new UserGroup(name, this);
         this.add(newGroup);
+        StatisticsTracker.getInstance().count(newGroup);
+        UserFinder.getInstance().register(newGroup);
         return newGroup;
     }
 

@@ -114,8 +114,14 @@ public class AdminControlPanel {
 
     public class addUserAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            ((UserGroup)ugRoot).spawnUser(userID.getText());
-            ugRoot.acceptVisitor(new TestVisitor());
+            String newName = userID.getText();
+
+            // Do nothing if the name is taken
+            if (UserFinder.getInstance().userNameTaken(newName)) return;
+
+            ((UserGroup)ugRoot).spawnUser(newName);
+
+            ugRoot.acceptVisitor(new TestVisitor()); // TODO: remove this later
 
             try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
 
