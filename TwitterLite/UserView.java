@@ -4,6 +4,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class UserView {
+
+    // ================================== GUI =================================
     private JFrame userViewFrame;
     private JPanel primary, top, middleTop, middleBottom, bottom;
     private JTextField userID;
@@ -11,8 +13,11 @@ public class UserView {
     private JList currentFollowing, newsFeed;
     private JTextArea tweetMessage;
     private JButton followUser, postTweet;
+    // ========================================================================
 
     private AbstractUser currentUser;
+    private DefaultListModel<User> userListModel = new DefaultListModel<>();
+    private DefaultListModel<Message> messageListModel = new DefaultListModel<>();
     
     public UserView(AbstractUser p_currentUser) {
         currentUser = p_currentUser;
@@ -60,7 +65,7 @@ public class UserView {
         // ====================================================================
         
         // ======================= middleTop Components =======================
-        currentFollowing = new JList(new DefaultListModel());
+        currentFollowing = new JList<>(userListModel);
         currentFollowing_scroll = new JScrollPane(currentFollowing);
         
         middleTop.add(currentFollowing_scroll);
@@ -78,7 +83,7 @@ public class UserView {
         // ====================================================================
         
         // ======================== bottom Components =========================
-        newsFeed = new JList(new DefaultListModel());
+        newsFeed = new JList<>(messageListModel);
         newsFeed_scroll = new JScrollPane(newsFeed);
         
         bottom.add(newsFeed_scroll);
@@ -88,6 +93,17 @@ public class UserView {
         userViewFrame.getContentPane().add(primary);
         userViewFrame.pack();
         userViewFrame.setVisible(true);
+
+        // ===================== CREATE LIST OF FOLLOWERS =====================
+        userListModel.clear();
+        for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
+            userListModel.addElement(((User) currentUser).getFollowing().get(i));
+        // ====================================================================
+
+        // ======================= CREATE LIST OF FEEDS =======================
+        messageListModel.clear();
+        //userListModel.addElement(((User) currentUser));
+        // ====================================================================
     }
 
     public class followUserAL implements ActionListener {
@@ -110,6 +126,7 @@ public class UserView {
 
             if (match != null && match instanceof User) {
                 ((User) currentUser).follow((User) match);
+
                 //for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
                     //currentFollowing.add(((User) currentUser).getFollowing().getUser(i).toString());
                 // here
