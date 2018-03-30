@@ -105,9 +105,28 @@ public class UserView {
             while(parent.getParent() != null)
                 parent = parent.getParent();
 
-            match = new User("biiifaifidsfidsaifdsa");
+            User match = searchForName(userID.getText(), (UserGroup)parent);
 
-            ((User) currentUser).follow(match);
+            ((User)currentUser).follow(match);
+        }
+
+        private User searchForName(String name, UserGroup root)
+        {
+            User result = null;
+
+            for(int i = 0; i < root.getChildCount(); i++)
+            {
+                if (root.getChildAt(i) instanceof User)
+                {
+                    if (root.getChildAt(i).name.equals(name))
+                        return (User)(root.getChildAt(i));
+                }
+                else if (result == null) {
+                    result = searchForName(name, (UserGroup) root.getChildAt(i));
+                }
+            }
+
+            return result;
         }
     }
 
