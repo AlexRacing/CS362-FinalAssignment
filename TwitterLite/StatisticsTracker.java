@@ -59,13 +59,13 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
         }
     }
 
-    private int rating(double sentiment) {
+    private static int rating(double sentiment) {
         int rating = (int) (Math.abs(sentiment) * SCALE);
         if (rating >= SCALE) rating = SCALE - 1;
         return rating;
     }
 
-    private double sentiment(int rating) {
+    private static double sentiment(int rating) {
         double sentiment = rating / ((double) SCALE);
         return sentiment;
     }
@@ -136,15 +136,25 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     }
 
     public double averageSentiment() {
+        if (totalMessages == 0) return 0;
         return cummulativeSentiment / totalMessages;
     }
 
     public double stdSentiment() {
+        if (totalMessages == 0) return 0;
         double avg = averageSentiment();
         return Math.sqrt(cummulativeSentiment2 / totalMessages - avg * avg);
     }
 
+    public double sentimentTScore() {
+        double std = stdSentiment();
+        if (std == 0.0) return 0.0;
+        return averageSentiment()/std;
+    }
+
     public double percentMorePositiveThan(double sentiment) {
+        if (totalMessages == 0) return 0;
+
         long total  = 0;
         int  rating = rating(sentiment);
 
@@ -186,6 +196,8 @@ public class StatisticsTracker implements IUserVisitor, IObservable {
     }
 
     public double percentRoughlyAsPositiveAs(double sentiment) {
+        if (totalMessages == 0) return 0;
+
         long total;
 
         if (sentiment == 0.0) total = countTrueNeutral;

@@ -5,23 +5,25 @@ import java.util.Map;
 /**
  * We haven't discussed this, but I think it's likely necessary.
  */
-public class UserFinder implements IUserVisitor, IObservable {
-    private static UserFinder instance = new UserFinder();
+public class Tracker implements IUserVisitor, IObservable {
+    private static Tracker instance = new Tracker();
 
     // Observable dependencies
     private ArrayList<IObserver> observers;
 
     // Databases
     private final Map<String, AbstractUser> nameMap;
-    private final Map<Integer, AbstractUser>      idMap;
+    private final Map<Integer, UUIDed>      idMap;
+    //private final Map<Integer, Message>      messageMap;
 
-    private UserFinder() {
+    private Tracker() {
         this.observers = new ArrayList<>();
         nameMap = new HashMap<>();
         idMap = new HashMap<>();
+        //messageMap = new HashMap<>();
     }
 
-    public static UserFinder getInstance() {
+    public static Tracker getInstance() {
         return instance;
     }
 
@@ -34,16 +36,30 @@ public class UserFinder implements IUserVisitor, IObservable {
         notifyObservers(newContent);
     }
 
+    public void register(UUIDed newContent) {
+        if (newContent == null) return;
+
+        idMap.put(newContent.getUUID(), newContent);
+
+        notifyObservers(newContent);
+    }
+
     public boolean userNameTaken(String name) {
         return nameMap.get(name) != null;
     }
 
-    public AbstractUser get(String name) {
+    public AbstractUser getUser(String name) {
         return nameMap.get(name);
     }
 
-    public AbstractUser get(int id) {
-        return idMap.get(id);
+    public AbstractUser getUser(int id) {
+        UUIDed ided = idMap.get(id);
+        return (ided != null && ided instanceof AbstractUser) ? (AbstractUser) ided : null;
+    }
+
+    public Message getMessage(int id) {
+        UUIDed ided = idMap.get(id);
+        return (ided != null && ided instanceof Message) ? (Message) ided : null;
     }
 
     /**
@@ -65,6 +81,7 @@ public class UserFinder implements IUserVisitor, IObservable {
     @Override
     public void visit(User user) {
         this.register(user);
+        user.forEach(this::register);
     }
 
     /**

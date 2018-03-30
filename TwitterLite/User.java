@@ -50,6 +50,7 @@ public class User extends AbstractUser implements Iterable<Message> {
         Message newMessage = new Message(this, message);
         this.messages.add(newMessage);
         StatisticsTracker.getInstance().count(newMessage);
+        Tracker.getInstance().register(newMessage);
         notifyObservers(newMessage);
 
         return newMessage;
@@ -68,6 +69,8 @@ public class User extends AbstractUser implements Iterable<Message> {
     }
 
     public void follow(User user) {
+        if (user == null || user == this) return;
+
         if (!this.following.contains(user)) {
             this.following.add(user);
             user.attachObserver(this);
@@ -76,6 +79,8 @@ public class User extends AbstractUser implements Iterable<Message> {
     }
 
     public void unfollow(User user) {
+        if (user == null || user == this) return;
+
         this.following.remove(user);
         user.detachObserver(this);
         this.notifyObservers(user);

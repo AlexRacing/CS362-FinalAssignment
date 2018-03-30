@@ -1,13 +1,10 @@
-import com.sun.xml.internal.bind.v2.TODO;
-import sun.reflect.generics.tree.Tree;
-
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.xml.ws.Action;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,20 +13,23 @@ public class AdminControlPanel {
     private JFrame adminCtrFrame;
     private JPanel primary, left, right, rightUpper, rightLower;
     private JTextField userID, groupID;
-    private JScrollPane treeView_scrollPane;
-    private JTree tree;
-    private TreeNodeAdapter root;
-    private DefaultTreeModel model;
-    private AbstractUser ugRoot = new UserGroup("Root");
-    private final AbstractUser PERMANENT_ROOT = (UserGroup)ugRoot;
-    private JButton addUser, addGroup, showUserTotal, showGroupTotal, showMessageTotal, showPositivePercent, openUserView;
+    private       JScrollPane           treeView_scrollPane;
+    private final JTree                 TREE;
+    private final TreeNodeAdapter       ROOT;
+    private final DefaultTreeModel      MODEL;
+    private final AbstractCompositeUser ROOT_UG;
+    private       AbstractUser          currentSelection;
+    private       JButton               addUser, addGroup, showUserTotal, showGroupTotal,
+            showMessageTotal, showPositivePercent, openUserView;
 
     public AdminControlPanel() {
 
-        root = new TreeNodeAdapter(ugRoot);
-        tree = new JTree(root);
-        tree.addTreeSelectionListener(new SelectionListener());
-        model = (DefaultTreeModel)tree.getModel();
+        ROOT_UG = new UserGroup("Root");
+        currentSelection = ROOT_UG;
+        ROOT = new TreeNodeAdapter(ROOT_UG);
+        TREE = new JTree(ROOT);
+        TREE.addTreeSelectionListener(new SelectionListener());
+        MODEL = (DefaultTreeModel) TREE.getModel();
 
         adminCtrFrame = new JFrame("Admin Control Panel");
         adminCtrFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -37,7 +37,7 @@ public class AdminControlPanel {
         // ======================= JPanel Instantiation =======================
         primary = new JPanel();
         left = new JPanel(); // contains ONLY the TreeView
-        left.setPreferredSize(new Dimension(200,350));
+        left.setPreferredSize(new Dimension(200, 350));
         right = new JPanel(); // contains two panels
         rightUpper = new JPanel();
         rightLower = new JPanel();
@@ -55,7 +55,7 @@ public class AdminControlPanel {
         // ======================= Set Layout Managers ========================
         left.setLayout(new BorderLayout());
         right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-        rightUpper.setLayout(new GridLayout(3, 2, 5 ,5));
+        rightUpper.setLayout(new GridLayout(3, 2, 5, 5));
         rightLower.setLayout(new GridLayout(2, 2, 5, 5));
         // ====================================================================
 
@@ -66,7 +66,7 @@ public class AdminControlPanel {
         // ====================================================================
 
         // ====================== Left Panel Components =======================
-        treeView_scrollPane = new JScrollPane(tree);
+        treeView_scrollPane = new JScrollPane(TREE);
         treeView_scrollPane.setHorizontalScrollBar(treeView_scrollPane.createHorizontalScrollBar());
         treeView_scrollPane.setVerticalScrollBar(treeView_scrollPane.createVerticalScrollBar());
 
@@ -112,6 +112,8 @@ public class AdminControlPanel {
         adminCtrFrame.getContentPane().add(primary);
         adminCtrFrame.pack();
         adminCtrFrame.setVisible(true);
+
+        loadDefaults(ROOT_UG); // TODO: remove this
     }
 
     public class addUserAL implements ActionListener {
@@ -119,142 +121,210 @@ public class AdminControlPanel {
             String newName = userID.getText();
 
             // Do nothing if the name is taken
-            if (UserFinder.getInstance().userNameTaken(newName)) {
+            if (Tracker.getInstance().userNameTaken(newName)) {
                 JOptionPane.showMessageDialog(adminCtrFrame, "Name taken, please choose another.");
                 return;
             }
 
             try {
-                ((UserGroup) ugRoot).spawnUser(newName);
-            } catch(ClassCastException ccE) {
-                JOptionPane.showMessageDialog(adminCtrFrame, "Cannot create a new User Group within a User.");
+                ((UserGroup) currentSelection).spawnUser(newName);
+            } catch (ClassCastException ccE) {
+                JOptionPane.showMessageDialog(adminCtrFrame,
+                                              "Cannot create a new User Group within a User.");
             }
+            MODEL.reload();
 
-            //ugRoot.acceptVisitor(new TestVisitor()); // TODO: remove this later
+            //currentSelection.acceptVisitor(new TestVisitor()); // TODO: remove this later
 
-            try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
+            //try { MODEL.reload(); } catch(NullPointerException npE) { System.out.println(""); }
 
-            //try { model.reload(root); } catch(NullPointerException npE) { System.out.println(""); }
+            //try { MODEL.reload(ROOT); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
     public class addGroupAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            ((UserGroup)ugRoot).spawnUserGroup(groupID.getText());
-            model.reload();
+            String newName = groupID.getText();
 
-            try { model.reload(); } catch(NullPointerException npE) { System.out.println(""); }
+            // Do nothing if the name is taken
+            if (Tracker.getInstance().userNameTaken(newName)) {
+                JOptionPane.showMessageDialog(adminCtrFrame, "Name taken, please choose another.");
+                return;
+            }
+
+            ((UserGroup) currentSelection).spawnUserGroup(newName);
+            MODEL.reload();
+
+            //try { MODEL.reload(); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
     public class showUserTotalAL implements ActionListener {
+        private final StatisticsTracker tracker = StatisticsTracker.getInstance();
         public void actionPerformed(ActionEvent event) {
-            JOptionPane.showMessageDialog(adminCtrFrame, getUserTotal(PERMANENT_ROOT));
-        }
+            StringBuilder message = new StringBuilder();
 
-        private int getUserTotal(AbstractUser currentNode) {
-            int userTotal = 0;
-            for (int i = 0; i < currentNode.getChildCount(); i++) {
-                if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
-                    userTotal++;
-                }
-                else if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
-                    userTotal += getUserTotal(((UserGroup) currentNode).getChildAt(i));
-                }
-            }
+            message.append("The current user count is: ")
+                   .append(tracker.getTotalUsers()).append('.');
 
-            return userTotal;
+            JOptionPane.showMessageDialog(adminCtrFrame, message.toString());
         }
     }
 
     public class showGroupTotalAL implements ActionListener {
+        private final StatisticsTracker tracker = StatisticsTracker.getInstance();
         public void actionPerformed(ActionEvent event) {
-            JOptionPane.showMessageDialog(adminCtrFrame, getGroupTotal(PERMANENT_ROOT));
-        }
+            StringBuilder message = new StringBuilder();
 
-        private int getGroupTotal(AbstractUser currentNode) {
-            int groupTotal = 0;
-            for (int i = 0; i < currentNode.getChildCount(); i++) {
-                if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
-                    groupTotal++;
-                    if(currentNode.getChildCount() > 0)
-                        groupTotal += getGroupTotal(((UserGroup) currentNode).getChildAt(i));
-                }
-            }
+            message.append("The current user group count is: ")
+                   .append(tracker.getTotalGroups()).append('.');
 
-            return groupTotal;
+            JOptionPane.showMessageDialog(adminCtrFrame, message.toString());
         }
     }
 
     public class showMessageTotalAL implements ActionListener {
+        private final StatisticsTracker tracker = StatisticsTracker.getInstance();
         public void actionPerformed(ActionEvent event) {
-            /*
-            int messageTotal = 0;
-            for(int i = 0 ; i < PERMANENT_ROOT.getChildCount() ; i++) {
-                if (((UserGroup)PERMANENT_ROOT).getChildAt(i) instanceof User) {
-                    messageTotal += ((User) ((UserGroup)PERMANENT_ROOT).getChildAt(i)).getMessages().size();
-                }
-            }
-            */
+            StringBuilder message = new StringBuilder();
 
-            JOptionPane.showMessageDialog(adminCtrFrame, getMessageTotal(PERMANENT_ROOT));
-        }
+            message.append("The current message count is: ")
+                   .append(tracker.getTotalMessages()).append('.');
 
-        private int getMessageTotal(AbstractUser currentNode) {
-            int messageTotal = 0;
-            for (int i = 0; i < currentNode.getChildCount(); i++) {
-                if (((UserGroup) currentNode).getChildAt(i) instanceof User) {
-                    messageTotal += ((User) ((UserGroup)currentNode).getChildAt(i)).getMessages().size();
-                }
-                else if (((UserGroup) currentNode).getChildAt(i) instanceof UserGroup) {
-                    messageTotal += getMessageTotal(((UserGroup) currentNode).getChildAt(i));
-                }
-            }
-
-            return messageTotal;
+            JOptionPane.showMessageDialog(adminCtrFrame, message.toString());
         }
     }
 
     public class showPositivePercentAL implements ActionListener {
-        private double positivity = 0;
-        private SentimentEngine engine = SentimentEngine.getInstance();
+        private final StatisticsTracker tracker = StatisticsTracker.getInstance();
 
         public void actionPerformed(ActionEvent event) {
-            //SentimentEngine engine = SentimentEngine.getInstance();
-            // basically the same as getting the messages except getting positivity from those messages
-            JOptionPane.showMessageDialog(adminCtrFrame, getPositivity(PERMANENT_ROOT));
-        }
+            double[][]    split   = tracker.getRoughSentimentSplit();
+            StringBuilder message = new StringBuilder();
 
-        private double getPositivity(AbstractUser currentNode) {
-            return positivity;
+            message.append("The current average sentiment score is: ")
+                   .append(Math.round(tracker.sentimentTScore() * 100)).append('\n')
+                   .append("Roughly ").append(Math.round(split[0][0] * 100))
+                   .append("% of messages are positive.").append('\n')
+                   .append("Roughly ").append(Math.round(split[0][1] * 100))
+                   .append("% of messages are negative.");
+
+            JOptionPane.showMessageDialog(adminCtrFrame, message.toString());
         }
     }
 
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            //UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
-            //if((((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject()) instanceof User)
+            //UserView uv = new UserView((User) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject());
+            //if((((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject()) instanceof User)
             try {
-                UserView uv = new UserView((User) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject());
-            } catch (ClassCastException ccE) {
-                System.out.println("");
-            }
+                UserView uv = new UserView(
+                        (User) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent())
+                                       .getUserObject());
+            } catch (ClassCastException ccE) {}
         }
     }
 
     public class SelectionListener implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent se) {
-            tree = (JTree) se.getSource();
+            //JTree tree = (JTree) se.getSource();
 
-            TreeNodeAdapter currentNode = (TreeNodeAdapter) tree.getLastSelectedPathComponent();
+            TreeNodeAdapter currentNode = (TreeNodeAdapter) TREE.getLastSelectedPathComponent();
 
-            // TODO: NullPointerException when adding a UserGroup to a UserGroup having clicked on the Destination UserGroup first
-            ugRoot = (AbstractUser) currentNode.getUserObject();
+            if (currentNode != null) currentSelection = (AbstractUser) currentNode.getUserObject();
 
-            //System.out.println(tree.getLastSelectedPathComponent());
-            //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) tree.getLastSelectedPathComponent()).getUserObject(); // *******
+            //System.out.println(TREE.getLastSelectedPathComponent());
+            //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject(); // *******
 
-            // TODO: fix having to close then open the 'subfolder' you're currently adding to to get the new nodes to show up.
+            // TODO: fix having to close then open the 'subfolder' you're currently adding to to getUser the new nodes to show up.
         }
+    }
+
+    private static void loadDefaults(AbstractCompositeUser root) {
+        UserGroup admin  = root.spawnUserGroup("Admin");
+        UserGroup cs     = root.spawnUserGroup("CS");
+        UserGroup cs3620 = cs.spawnUserGroup("CS-3620");
+        User      alex   = admin.spawnUser("Alex");
+        User      allan  = admin.spawnUser("Allan");
+        User      scott  = admin.spawnUser("Scott");
+        User      adam  = cs.spawnUser("Adam");
+        User      chris  = cs.spawnUser("Chris");
+        User      drew   = cs.spawnUser("Drew");
+        User      remah  = cs.spawnUser("Remah");
+        User      will   = cs.spawnUser("Will");
+        User      aaron   = cs3620.spawnUser("Aaron");
+        User      bruce  = cs3620.spawnUser("Bruce");
+        User      eric   = cs3620.spawnUser("Eric");
+        User      sarah  = cs3620.spawnUser("Sarah");
+        User      zeru   = cs3620.spawnUser("Zeru");
+
+        alex.spawnMessage("I love COBOL!");
+        allan.spawnMessage("You are wrong, and here's why...");
+        scott.spawnMessage("*dances*");
+
+        adam.spawnMessage("I hope my wife has triplets!");
+        chris.spawnMessage("I love video games, I just wish I was any good :(");
+        drew.spawnMessage("I think I'm going to delete my twitter account now.");
+        remah.spawnMessage("Yeah this is so much better!");
+        will.spawnMessage("I'm working on Theory right now...");
+        bruce.spawnMessage("I hate twitter so much!");
+        eric.spawnMessage("This is terrible...");
+        aaron.spawnMessage("I am playing PokemonGo.");
+        sarah.spawnMessage("This is a test message, I'm otherwise not participating.");
+        zeru.spawnMessage("This class is awesome.");
+
+        alex.follow(allan);
+        alex.follow(scott);
+        alex.follow(chris);
+        alex.follow(will);
+        alex.follow(aaron);
+
+        allan.follow(alex);
+        allan.follow(scott);
+        allan.follow(eric);
+        allan.follow(bruce);
+        allan.follow(adam);
+        allan.follow(chris);
+        allan.follow(remah);
+        allan.follow(drew);
+        allan.follow(zeru);
+
+        scott.follow(alex);
+        scott.follow(allan);
+        scott.follow(chris);
+        scott.follow(will);
+        scott.follow(aaron);
+
+        chris.follow(alex);
+        chris.follow(allan);
+        chris.follow(scott);
+        chris.follow(will);
+
+        will.follow(alex);
+        will.follow(allan);
+        will.follow(scott);
+        will.follow(chris);
+        will.follow(adam);
+
+        adam.follow(allan);
+        adam.follow(will);
+
+        sarah.follow(eric);
+
+        eric.follow(sarah);
+
+        remah.follow(drew);
+
+        drew.follow(remah);
+
+        bruce.follow(allan);
+        bruce.follow(zeru);
+
+        zeru.follow(allan);
+        zeru.follow(bruce);
+
+        alex.spawnMessage("I have come to my senses and now hate COBOL...");
+        allan.spawnMessage("Clearly Fortran is better.");
+        scott.spawnMessage("I only program in OhCrap.");
     }
 }

@@ -77,7 +77,7 @@ public class SimpleSentimentEngine extends SentimentEngine {
                 if (previous != null) bigram -= previous; // replace with bigram
                 score += bigram;
             } else if (value != null) score += value;
-            else if ((w = root(w)) != null) { // Try to get the root and try again
+            else if ((w = root(w)) != null) { // Try to getUser the root and try again
                 value = scoreMap.get(w);
                 bigram = (last != null) ? scoreMap.get(last + '_' + w) : null;
 
