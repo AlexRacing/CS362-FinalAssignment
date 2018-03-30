@@ -101,13 +101,18 @@ public class UserView {
             //((User) currentUser).getUUID();
             // TODO: currentUser should be able to enter another User's ID and follow them
 
+            // get root
             AbstractUser parent = currentUser;
             while(parent.getParent() != null)
                 parent = parent.getParent();
 
+            // search for user with same name
             User match = searchForName(userID.getText(), (UserGroup)parent);
 
-            ((User)currentUser).follow(match);
+            // follow that user
+            // TODO: fix follow method failing
+            if (match != null)
+                ((User)currentUser).follow(match);
         }
 
         private User searchForName(String name, UserGroup root)
@@ -118,7 +123,7 @@ public class UserView {
             {
                 if (root.getChildAt(i) instanceof User)
                 {
-                    if (root.getChildAt(i).name.equals(name))
+                    if (root.getChildAt(i).getName().equals(name))
                         return (User)(root.getChildAt(i));
                 }
                 else if (result == null) {
