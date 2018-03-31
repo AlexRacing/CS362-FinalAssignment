@@ -12,7 +12,7 @@ public class TestUserStructure {
 
         Message m1Root = uRoot.spawnMessage("The cake is a lie!");
 
-        Message m1L1 = uL1.spawnMessage("I'm a stupid moron who sucks!");
+        Message m1L1 = uL1.spawnMessage("I'm a different person than Vessey");
 
         root.acceptVisitor(new TestVisitor(System.out));
     }
