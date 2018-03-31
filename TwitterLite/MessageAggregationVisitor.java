@@ -30,7 +30,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     @Override
     public void update() {
         this.seen.keySet().forEach(this::visit);
-        this.notifyObservers();
+        this.notifyObservers(this);
     }
 
     @Override
@@ -38,11 +38,12 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
         if (source instanceof User) {
             User u = (User) source;
             if (this.shouldSkip(u) && this.seen.get(u) != null) {
+                u.detachObserver(this);
                 this.purgeUser(u);
                 this.seen.remove(u);
             } else this.visit(u);
         }
-        this.notifyObservers();
+        this.notifyObservers(this);
     }
 
     @Override
@@ -50,7 +51,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
         if (content instanceof Message) {
             this.newMessage((Message) content);
         }
-        this.notifyObservers();
+        this.notifyObservers(this);
     }
 
     // Observer related methods
@@ -96,21 +97,25 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
      */
     @Override
     public void visit(User user) {
+        //System.out.println("Visiting: "+user);
         if (this.shouldSkip(user)) return;
 
         Message lastSeen = this.seen.get(user);
 
         if (lastSeen != null) { // If the users has been seen before
             Message newMostRecent = lastSeen;
-            for (Message m : user)
+            for (Message m : user) {
+                //System.out.println("Previous check: "+m.isNewerThan(lastSeen));
                 if (m.isNewerThan(lastSeen)) {
                     if (m.isNewerThan(newMostRecent)) newMostRecent = m;
                     this.consider(m);
                 }
+            }
         } else { // If the users has not been seen before
             user.attachObserver(this);
             for (Message m : user) {
                 if (lastSeen == null || m.isNewerThan(lastSeen)) lastSeen = m;
+                //System.out.println("New check: "+m.isNewerThan(lastSeen));
                 this.consider(m);
             }
             this.seen.put(user, lastSeen); // The users has now been seen

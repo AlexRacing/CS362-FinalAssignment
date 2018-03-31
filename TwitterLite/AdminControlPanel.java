@@ -131,12 +131,6 @@ public class AdminControlPanel {
                                               "Cannot create a new User Group within a User.");
             }
             MODEL.reload();
-
-            //currentSelection.acceptVisitor(new TestVisitor()); // TODO: remove this later
-
-            //try { MODEL.reload(); } catch(NullPointerException npE) { System.out.println(""); }
-
-            //try { MODEL.reload(ROOT); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
@@ -152,8 +146,6 @@ public class AdminControlPanel {
 
             ((UserGroup) currentSelection).spawnUserGroup(newName);
             MODEL.reload();
-
-            //try { MODEL.reload(); } catch(NullPointerException npE) { System.out.println(""); }
         }
     }
 
@@ -213,8 +205,6 @@ public class AdminControlPanel {
 
     public class openUserViewAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            //UserView uv = new UserView((User) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject());
-            //if((((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject()) instanceof User)
             try {
                 UserView uv = new UserView(
                         (User) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent())
@@ -225,16 +215,9 @@ public class AdminControlPanel {
 
     public class SelectionListener implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent se) {
-            //JTree tree = (JTree) se.getSource();
-
             TreeNodeAdapter currentNode = (TreeNodeAdapter) TREE.getLastSelectedPathComponent();
 
             if (currentNode != null) currentSelection = (AbstractUser) currentNode.getUserObject();
-
-            //System.out.println(TREE.getLastSelectedPathComponent());
-            //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject(); // *******
-
-            // TODO: fix having to close then open the 'subfolder' you're currently adding to to getUser the new nodes to show up.
         }
     }
 

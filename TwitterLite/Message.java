@@ -46,7 +46,7 @@ public class Message extends UUIDed {
 
     @Override
     public String toString() {
-        return this.message;
+        return this.op.getName()+": "+this.message;
     }
 
     public String toDetailedString() {
@@ -61,7 +61,9 @@ public class Message extends UUIDed {
     // Time comparable related methods
 
     public int compareTime(Message message) {
-        return Long.compare(this.getTimecode(), message.getTimecode());
+        int compare = Long.compare(this.getTimecode(), message.getTimecode());
+        if (compare == 0) compare = Long.compare(this.getUUID(), message.getUUID());
+        return compare;
     }
 
     public int compareTime(long timecode) {
@@ -69,12 +71,12 @@ public class Message extends UUIDed {
     }
 
     public boolean isNewerThan(Message message) {
+        return compareTime(message) > 0;
         // This might be backwards
-        return Long.compare(this.getTimecode(), message.getTimecode()) < 0;
     }
 
     public boolean isNewerThan(long timecode) {
+        return compareTime(timecode) > 0;
         // This might be backwards
-        return Long.compare(this.getTimecode(), timecode) < 0;
     }
 }

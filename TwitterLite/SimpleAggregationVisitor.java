@@ -1,6 +1,5 @@
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Queue;
 import java.util.Set;
 
 public class SimpleAggregationVisitor extends MessageAggregationVisitor {
@@ -17,6 +16,7 @@ public class SimpleAggregationVisitor extends MessageAggregationVisitor {
 
     @Override
     protected void consider(Message message) {
+        //System.out.println("Considering: "+ message);
         this.messages.add(message);
     }
 

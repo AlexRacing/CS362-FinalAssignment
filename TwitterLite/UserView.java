@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Queue;
 import javax.swing.*;
 
-public class UserView {
+public class UserView implements IObserver {
 
     // ================================== GUI =================================
     private JFrame userViewFrame;
@@ -15,6 +16,7 @@ public class UserView {
     private JButton followUser, postTweet;
     // ========================================================================
 
+    private MessageAggregationVisitor feedVisitor;
     private AbstractUser currentUser;
     private DefaultListModel<User> userListModel = new DefaultListModel<>();
     private DefaultListModel<Message> messageListModel = new DefaultListModel<>();
@@ -42,8 +44,8 @@ public class UserView {
         
         // ======================= Set Layout Managers ========================
         primary.setLayout(new BoxLayout(primary, BoxLayout.Y_AXIS));
-        top.setLayout(new GridLayout(1, 2, 5 ,5));
-        middleBottom.setLayout(new GridLayout(1, 2, 5 ,5));
+        top.setLayout(new GridLayout(1, 2, 10 ,10));
+        middleBottom.setLayout(new GridLayout(1, 2, 10 ,10));
         // ====================================================================
         
         // ========================== Create Borders ==========================
@@ -67,7 +69,9 @@ public class UserView {
         // ======================= middleTop Components =======================
         currentFollowing = new JList<>(userListModel);
         currentFollowing_scroll = new JScrollPane(currentFollowing);
-        currentFollowing_scroll.setMinimumSize(middleTop.getSize()); // why this doesn't work I will never know
+        currentFollowing_scroll.setPreferredSize(new Dimension(200,100));
+        currentFollowing_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        currentFollowing_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         
         middleTop.add(currentFollowing_scroll);
         // ====================================================================
@@ -86,7 +90,10 @@ public class UserView {
         // ======================== bottom Components =========================
         newsFeed = new JList<>(messageListModel);
         newsFeed_scroll = new JScrollPane(newsFeed);
-        
+        newsFeed_scroll.setPreferredSize(new Dimension(250,200));
+        newsFeed_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        newsFeed_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         bottom.add(newsFeed_scroll);
         // ====================================================================
         
@@ -103,22 +110,26 @@ public class UserView {
 
         // ======================= CREATE LIST OF FEEDS =======================
         messageListModel.clear();
-        //Object o = ((User) currentUser).getFeed().toArray();
-        //System.out.println(o);
 
-        messageListModel.addElement(((User) currentUser).getFeed().poll());
+        feedVisitor = new FollowingAggregationFilter(((User) currentUser), new SimpleAggregationVisitor());
+
+        ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
+
+        feedVisitor.attachObserver(this);
+
+        Queue<Message> feed = feedVisitor.getFeed();
+        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+
+        //feedVisitor.stopObserving(); // If done
         // ====================================================================
     }
 
     public class followUserAL implements ActionListener {
 
-        private User match;
-
         public void actionPerformed(ActionEvent event) {
             if (!(currentUser instanceof User)) return;
 
             String findText = userID.getText();
-            //AbstractCompositeUser root = currentUser.getRoot();
             AbstractUser match;
 
             try {
@@ -130,13 +141,7 @@ public class UserView {
 
             if (match != null && match instanceof User) {
                 ((User) currentUser).follow((User) match);
-
-                //for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
-                    //currentFollowing.add(((User) currentUser).getFollowing().getUser(i).toString());
-                // here
             }
-
-            //((User) currentUser).getFollowing().forEach(System.out::println);
         }
 
         private User searchForName(String name, UserGroup root)
@@ -161,7 +166,40 @@ public class UserView {
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
+            feedVisitor.stopObserving(); // If done
+
             ((User) currentUser).spawnMessage(tweetMessage.getText());
         }
+    }
+
+    @Override
+    public void update() {
+        messageListModel.clear();
+        Queue<Message> feed = feedVisitor.getFeed();
+        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+    }
+
+    @Override
+    public void update(IObservable source) {
+        if (source == feedVisitor) {
+            messageListModel.clear();
+            Queue<Message> feed = feedVisitor.getFeed();
+            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        }
+    }
+
+    @Override
+    public void update(IObservable source, Object content) {
+        if (source == feedVisitor) {
+            messageListModel.clear();
+            Queue<Message> feed = feedVisitor.getFeed();
+            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        }
+    }
+
+    protected void finalize() {
+        feedVisitor.detachObserver(this);
+        feedVisitor.stopObserving();
     }
 }
