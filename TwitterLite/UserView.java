@@ -15,6 +15,7 @@ public class UserView {
     private JButton followUser, postTweet;
     // ========================================================================
 
+    private MessageAggregationVisitor feedVisitor;
     private AbstractUser currentUser;
     private DefaultListModel<User> userListModel = new DefaultListModel<>();
     private DefaultListModel<Message> messageListModel = new DefaultListModel<>();
@@ -42,8 +43,8 @@ public class UserView {
         
         // ======================= Set Layout Managers ========================
         primary.setLayout(new BoxLayout(primary, BoxLayout.Y_AXIS));
-        top.setLayout(new GridLayout(1, 2, 5 ,5));
-        middleBottom.setLayout(new GridLayout(1, 2, 5 ,5));
+        top.setLayout(new GridLayout(1, 2, 10 ,10));
+        middleBottom.setLayout(new GridLayout(1, 2, 10 ,10));
         // ====================================================================
         
         // ========================== Create Borders ==========================
@@ -67,7 +68,9 @@ public class UserView {
         // ======================= middleTop Components =======================
         currentFollowing = new JList<>(userListModel);
         currentFollowing_scroll = new JScrollPane(currentFollowing);
-        currentFollowing_scroll.setMinimumSize(middleTop.getSize()); // why this doesn't work I will never know
+        currentFollowing_scroll.setPreferredSize(new Dimension(200,100));
+        currentFollowing_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        currentFollowing_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         
         middleTop.add(currentFollowing_scroll);
         // ====================================================================
@@ -86,7 +89,9 @@ public class UserView {
         // ======================== bottom Components =========================
         newsFeed = new JList<>(messageListModel);
         newsFeed_scroll = new JScrollPane(newsFeed);
-        
+        newsFeed_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        newsFeed_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         bottom.add(newsFeed_scroll);
         // ====================================================================
         
@@ -106,7 +111,13 @@ public class UserView {
         //Object o = ((User) currentUser).getFeed().toArray();
         //System.out.println(o);
 
-        messageListModel.addElement(((User) currentUser).getFeed().poll());
+        feedVisitor = new FollowingAggregationFilter(((User) currentUser), new SimpleAggregationVisitor());
+
+        ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
+
+        feedVisitor.getFeed().forEach(messageListModel::addElement);
+
+        feedVisitor.stopObserving(); // If done
         // ====================================================================
     }
 

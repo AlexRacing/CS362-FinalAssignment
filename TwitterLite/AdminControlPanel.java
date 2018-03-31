@@ -233,8 +233,6 @@ public class AdminControlPanel {
 
             //System.out.println(TREE.getLastSelectedPathComponent());
             //AbstractUser u = (AbstractUser) ((TreeNodeAdapter) TREE.getLastSelectedPathComponent()).getUserObject(); // *******
-
-            // TODO: fix having to close then open the 'subfolder' you're currently adding to to getUser the new nodes to show up.
         }
     }
 
