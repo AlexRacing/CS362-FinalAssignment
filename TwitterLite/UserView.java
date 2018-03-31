@@ -67,6 +67,7 @@ public class UserView {
         // ======================= middleTop Components =======================
         currentFollowing = new JList<>(userListModel);
         currentFollowing_scroll = new JScrollPane(currentFollowing);
+        currentFollowing_scroll.setMinimumSize(middleTop.getSize()); // why this doesn't work I will never know
         
         middleTop.add(currentFollowing_scroll);
         // ====================================================================
@@ -102,7 +103,10 @@ public class UserView {
 
         // ======================= CREATE LIST OF FEEDS =======================
         messageListModel.clear();
-        //userListModel.addElement(((User) currentUser));
+        //Object o = ((User) currentUser).getFeed().toArray();
+        //System.out.println(o);
+
+        messageListModel.addElement(((User) currentUser).getFeed().poll());
         // ====================================================================
     }
 
