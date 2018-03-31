@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -160,6 +161,9 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
      * @return Message messages as queue, most recent to least recent.
      */
     public Queue<Message> getFeed() {
-        return new PriorityQueue<>(getMessages());
+        Collection<Message> messages = getMessages();
+        PriorityQueue<Message> queue = new PriorityQueue<>(((Comparator<? super Message>) Message::compareTime));
+        queue.addAll(messages);
+        return queue;
     }
 }
