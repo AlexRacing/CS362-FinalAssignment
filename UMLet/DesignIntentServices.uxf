@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>510</w>
+      <h>670</h>
+    </coordinates>
+    <panel_attributes>::StatisticsTracker
+--
+-instance = new StatisticsTracker(): StatisticsTracker
+-sentimentEngine = SentimentEngine.getInstance(): SentimentEngine
+-SCALE = 10: int
+-totalUsers = 0: long
+-totalGroups = 0: long
+-totalMessages = 0: long
+-countTrueNeutral = 0: long
+-countBySentiment = new long[2][SCALE]: long[][]
+-cummulativeSentiment = 0.0: double
+-cummulativeSentiment2 = 0.0: double
+-observers: ArrayList&lt;IObserver&gt;
+--
+-StatisticsTracker(): ctor
++getInstance(): StatisticsTracker
++count(User newUser): void
++count(UserGroup newUserGroup): void
++count(Message newMessage): void
+-countSentiment(double sentiment): void
+-rating(double sentiment): int
+-sentiment(int rating): double
++countAll(IUserVisitable root): void
++visit(User user): void
++visit(UserGroup userGroup): void
++attachObserver(IObserver obs): void
++detachObserver(IObserver obs): void
++notifyObservers(): void
++notifyObservers(Object content): void
++getTotalUsers(): long
++getTotalGroups(): long
++getTotalMessages(): long
++averageSentiment(): double
++stdSentiment(): double
++sentimentTScore(): double
++percentMorePositiveThan(double sentiment): double
++percentAtLeastAsPositiveAs(double sentiment): double
++percentRoughlyAsPositiveAs(double sentiment): double
++getRoughSentimentSplit(): double[][]
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

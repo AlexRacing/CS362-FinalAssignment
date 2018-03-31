@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>370</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>/::MessageAggregationVisitor/
+--
+#seen: Map&lt;User, Message&gt;
+#observers: ArrayList&lt;IObserver&gt;
+--
++MessageAggregationVisitor(): ctor
++update(): void
++update(IObservable source): void
++update(IObservable source, Object content): void
++attachObserver(IObserver obs): void
++detachObserver(IObserver obs): void
++notifyObservers(): void
++notifyObservers(Object content): void
+#stopObserving(): void
++visit(User user): void
++newMessage(Message message): void
+#shouldSkip(User user): boolean
+#consider(Message message): void
+#purgeUser(User user): void
+#getMessages(): Collection&lt;Message&gt;
++getFeed(): Queue&lt;Message&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
