@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Queue;
 import javax.swing.*;
 
-public class UserView {
+public class UserView implements IObserver {
 
     // ================================== GUI =================================
     private JFrame userViewFrame;
@@ -114,9 +115,12 @@ public class UserView {
 
         ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
 
-        feedVisitor.getFeed().forEach(messageListModel::addElement);
+        feedVisitor.attachObserver(this);
 
-        feedVisitor.stopObserving(); // If done
+        Queue<Message> feed = feedVisitor.getFeed();
+        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+
+        //feedVisitor.stopObserving(); // If done
         // ====================================================================
     }
 
@@ -167,5 +171,35 @@ public class UserView {
 
             ((User) currentUser).spawnMessage(tweetMessage.getText());
         }
+    }
+
+    @Override
+    public void update() {
+        messageListModel.clear();
+        Queue<Message> feed = feedVisitor.getFeed();
+        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+    }
+
+    @Override
+    public void update(IObservable source) {
+        if (source == feedVisitor) {
+            messageListModel.clear();
+            Queue<Message> feed = feedVisitor.getFeed();
+            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        }
+    }
+
+    @Override
+    public void update(IObservable source, Object content) {
+        if (source == feedVisitor) {
+            messageListModel.clear();
+            Queue<Message> feed = feedVisitor.getFeed();
+            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        }
+    }
+
+    protected void finalize() {
+        feedVisitor.detachObserver(this);
+        feedVisitor.stopObserving();
     }
 }
