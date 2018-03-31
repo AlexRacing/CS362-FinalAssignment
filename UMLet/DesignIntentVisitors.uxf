@@ -4,12 +4,12 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
+      <x>120</x>
+      <y>130</y>
       <w>370</w>
-      <h>360</h>
+      <h>330</h>
     </coordinates>
-    <panel_attributes>/::MessageAggregationVisitor/
+    <panel_attributes>/MessageAggregationVisitor/
 --
 #seen: Map&lt;User, Message&gt;
 #observers: ArrayList&lt;IObserver&gt;
@@ -30,8 +30,242 @@
 #purgeUser(User user): void
 #getMessages(): Collection&lt;Message&gt;
 +getFeed(): Queue&lt;Message&gt;
---
 </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>590</x>
+      <y>130</y>
+      <w>490</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>/MessageAggregationFilter/
+--
+#aggregator: MessageAggregationVisitor
+--
++MessageAggregationFilter(MessageAggregationVisitor aggregator)
+#shouldSkip(User user): boolean
+#consider(Message message): void
+#purgeUser(User user): void
++getMessages(): Collection&lt;Message&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>720</y>
+      <w>370</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>TreeNodeAdapter
+--
+#TreeNodeAdapter(AbstractUser content)
++add(AbstractUser abstractUser): void
++update(): void
++update(IObservable source): void
++update(IObservable source, Object content): void
+#remove(Object o): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>720</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>AdminControlPanel
+--
+-TREE: JTree
+-ROOT: TreeNodeAdapter
+-ROOT_UG: AbstractCompositeUser
+-currentSelection: AbstractUser
+--
++AdminControlPanel()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>120</x>
+      <y>720</y>
+      <w>370</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>UserView
+--
+-feedVisitor: MessageAggregationVisitor
+-currentUser: User
+--
++UserView(AbstractUser p_currentUser)
++update(): void
++update(IObservable source): void
++update(IObservable source, Object content): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>180</x>
+      <y>530</y>
+      <w>380</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IObserver
+--
+~update(): void
+~update(IObservable source): void
+~update(IObservable source, Object content): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>590</x>
+      <y>530</y>
+      <w>290</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IObservable
+--
+~attachObserver(IObserver obs): void
+~detachObserver(IObserver obs): void
+~notifyObservers(): void
+~notifyObservers(Object content): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>910</x>
+      <y>530</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IUserVisitor
+--
+~visit(User user): void
+~visit(UserGroup userGroup): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>130</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>160</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>450</y>
+      <w>30</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>470</y>
+      <w>410</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>390.0;60.0;390.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>690</x>
+      <y>470</y>
+      <w>370</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>350.0;60.0;350.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>450</y>
+      <w>30</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;270.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>680</y>
+      <w>180</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0;160.0;10.0;160.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>680</y>
+      <w>170</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150.0;40.0;150.0;10.0;10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>290</x>
+      <y>640</y>
+      <w>30</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>440</x>
+      <y>640</y>
+      <w>560</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0;540.0;30.0;540.0;80.0</additional_attributes>
   </element>
 </diagram>
