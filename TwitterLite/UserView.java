@@ -89,6 +89,7 @@ public class UserView {
         // ======================== bottom Components =========================
         newsFeed = new JList<>(messageListModel);
         newsFeed_scroll = new JScrollPane(newsFeed);
+        newsFeed_scroll.setPreferredSize(new Dimension(250,200));
         newsFeed_scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         newsFeed_scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -108,8 +109,6 @@ public class UserView {
 
         // ======================= CREATE LIST OF FEEDS =======================
         messageListModel.clear();
-        //Object o = ((User) currentUser).getFeed().toArray();
-        //System.out.println(o);
 
         feedVisitor = new FollowingAggregationFilter(((User) currentUser), new SimpleAggregationVisitor());
 
@@ -123,13 +122,10 @@ public class UserView {
 
     public class followUserAL implements ActionListener {
 
-        private User match;
-
         public void actionPerformed(ActionEvent event) {
             if (!(currentUser instanceof User)) return;
 
             String findText = userID.getText();
-            //AbstractCompositeUser root = currentUser.getRoot();
             AbstractUser match;
 
             try {
@@ -141,13 +137,7 @@ public class UserView {
 
             if (match != null && match instanceof User) {
                 ((User) currentUser).follow((User) match);
-
-                //for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
-                    //currentFollowing.add(((User) currentUser).getFollowing().getUser(i).toString());
-                // here
             }
-
-            //((User) currentUser).getFollowing().forEach(System.out::println);
         }
 
         private User searchForName(String name, UserGroup root)
@@ -172,6 +162,9 @@ public class UserView {
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
+            feedVisitor.stopObserving(); // If done
+
             ((User) currentUser).spawnMessage(tweetMessage.getText());
         }
     }
