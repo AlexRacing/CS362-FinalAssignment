@@ -109,7 +109,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
         } else { // If the users has not been seen before
             user.attachObserver(this);
             for (Message m : user) {
-                if (m.isNewerThan(lastSeen)) lastSeen = m;
+                if (lastSeen == null || m.isNewerThan(lastSeen)) lastSeen = m;
                 this.consider(m);
             }
             this.seen.put(user, lastSeen); // The users has now been seen
