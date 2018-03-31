@@ -4,34 +4,26 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
-      <w>510</w>
-      <h>670</h>
+      <x>340</x>
+      <y>220</y>
+      <w>300</w>
+      <h>410</h>
     </coordinates>
-    <panel_attributes>::StatisticsTracker
+    <panel_attributes>StatisticsTracker
 --
--instance = new StatisticsTracker(): StatisticsTracker
--sentimentEngine = SentimentEngine.getInstance(): SentimentEngine
--SCALE = 10: int
--totalUsers = 0: long
--totalGroups = 0: long
--totalMessages = 0: long
--countTrueNeutral = 0: long
--countBySentiment = new long[2][SCALE]: long[][]
--cummulativeSentiment = 0.0: double
--cummulativeSentiment2 = 0.0: double
+-instance: StatisticsTracker
+-sentimentEngine: SentimentEngine
+-totalUsers: long
+-totalGroups: long
+-totalMessages: long
+-cummulativeSentiment: double
 -observers: ArrayList&lt;IObserver&gt;
 --
--StatisticsTracker(): ctor
+-StatisticsTracker()
 +getInstance(): StatisticsTracker
 +count(User newUser): void
 +count(UserGroup newUserGroup): void
 +count(Message newMessage): void
--countSentiment(double sentiment): void
--rating(double sentiment): int
--sentiment(int rating): double
-+countAll(IUserVisitable root): void
 +visit(User user): void
 +visit(UserGroup userGroup): void
 +attachObserver(IObserver obs): void
@@ -43,13 +35,173 @@
 +getTotalMessages(): long
 +averageSentiment(): double
 +stdSentiment(): double
-+sentimentTScore(): double
-+percentMorePositiveThan(double sentiment): double
-+percentAtLeastAsPositiveAs(double sentiment): double
-+percentRoughlyAsPositiveAs(double sentiment): double
-+getRoughSentimentSplit(): double[][]
---
 </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>220</y>
+      <w>310</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>LookupEngine
+--
+-instance: LookupEngine
+-observers: ArrayList&lt;IObserver&gt;
+-nameMap: Map&lt;String, AbstractUser&gt;
+-idMap: Map&lt;Integer, UUIDed&gt;
+--
+-LookupEngine()
++getInstance(): LookupEngine
++register(AbstractUser newContent): void
++register(UUIDed newContent): void
++userNameTaken(String name): boolean
++getUser(String name): AbstractUser
++getUser(int id): AbstractUser
++getMessage(int id): Message
++visit(User user): void
++visit(UserGroup userGroup): void
++attachObserver(IObserver obs): void
++detachObserver(IObserver obs): void
++notifyObservers(): void
++notifyObservers(Object content): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>650</x>
+      <y>330</y>
+      <w>330</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>/SentimentEngine/
+--
+-instance: SentimentEngine
+--
+-getSentimentEngine(): SentimentEngine
++getInstance(): SentimentEngine
++sentimentScore(Message message): double
++sentimentScore(String text): double</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>650</x>
+      <y>520</y>
+      <w>330</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>SimpleSentimentEngine
+--
+-scoreMap: Map&lt;String, Double&gt;
+--
+-readScores(): Map&lt;String, Double&gt;
++sentimentScore(Message message): double
++sentimentScore(String text): double</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IUserVisitor
+--
+~visit(User user): void
+~visit(UserGroup userGroup): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>350</x>
+      <y>20</y>
+      <w>290</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IObservable
+--
+~attachObserver(IObserver obs): void
+~detachObserver(IObserver obs): void
+~notifyObservers(): void
+~notifyObservers(Object content): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>790</x>
+      <y>460</y>
+      <w>30</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>130</y>
+      <w>30</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>130</y>
+      <w>360</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>340.0;10.0;340.0;40.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>500</x>
+      <y>130</y>
+      <w>80</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>60.0;10.0;60.0;60.0;10.0;60.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>220</x>
+      <y>130</y>
+      <w>310</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0;290.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>260</y>
+      <w>190</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;10.0;170.0;70.0</additional_attributes>
   </element>
 </diagram>
