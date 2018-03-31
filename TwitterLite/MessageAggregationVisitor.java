@@ -19,6 +19,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
 
     public MessageAggregationVisitor() {
         this.seen = new HashMap<>();
+        this.observers = new ArrayList<>();
     }
 
     // Observer related methods
