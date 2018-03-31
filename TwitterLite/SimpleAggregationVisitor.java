@@ -1,11 +1,13 @@
-import java.util.PriorityQueue;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 public class SimpleAggregationVisitor extends MessageAggregationVisitor {
-    protected final Queue<Message> feed;
+    protected final Set<Message> messages;
 
     public SimpleAggregationVisitor() {
-        this.feed = new PriorityQueue<>();
+        this.messages = new HashSet<>();
     }
 
     @Override
@@ -15,18 +17,18 @@ public class SimpleAggregationVisitor extends MessageAggregationVisitor {
 
     @Override
     protected void consider(Message message) {
-        this.feed.add(message);
+        this.messages.add(message);
     }
 
     @Override
     protected void purgeUser(User user) {
-        this.feed.removeIf(m -> user.equals(m.getOP()));
+        this.messages.removeIf(m -> user.equals(m.getOP()));
     }
 
     /**
-     * @return Message feed as queue, most recent to least recent.
+     * @return Message messages as queue, most recent to least recent.
      */
-    public Queue<Message> getFeed() {
-        return feed;
+    protected Collection<Message> getMessages() {
+        return messages;
     }
 }

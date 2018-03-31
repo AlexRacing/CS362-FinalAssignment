@@ -1,6 +1,8 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
@@ -116,7 +118,7 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     }
 
     /**
-     * Used to add newly created messages to the feed.
+     * Used to add newly created messages to the messages.
      *
      * @param message Message to consider
      */
@@ -146,14 +148,18 @@ public abstract class MessageAggregationVisitor implements IUserVisitor, IObserv
     protected abstract void consider(Message message);
 
     /**
-     * Requests a users be purged from the feed.
+     * Requests a users be purged from the messages.
      *
      * @param user The users to purge.
      */
     protected abstract void purgeUser(User user);
 
+    protected abstract Collection<Message> getMessages();
+
     /**
-     * @return Message feed as queue, most recent to least recent.
+     * @return Message messages as queue, most recent to least recent.
      */
-    public abstract Queue<Message> getFeed();
+    public Queue<Message> getFeed() {
+        return new PriorityQueue<>(getMessages());
+    }
 }

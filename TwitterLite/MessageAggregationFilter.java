@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.Queue;
 
 /**
@@ -27,7 +28,7 @@ public abstract class MessageAggregationFilter extends MessageAggregationVisitor
     }
 
     @Override
-    public Queue<Message> getFeed() {
-        return this.aggregator.getFeed();
+    public Collection<Message> getMessages() {
+        return this.aggregator.getMessages();
     }
 }

@@ -15,7 +15,7 @@ public class User extends AbstractUser implements Iterable<Message> {
     // The messages created by this users
     private ArrayList<Message> messages;
 
-    // The object that contains the message feed, if created
+    // The object that contains the message messages, if created
     private MessageAggregationVisitor feedVisitor = null;
 
     /**
@@ -84,7 +84,7 @@ public class User extends AbstractUser implements Iterable<Message> {
     }
 
     public void update() {
-        this.feedVisitor = null; // The feed is now invalid
+        this.feedVisitor = null; // The messages is now invalid
     }
 
     // Getters
@@ -129,7 +129,7 @@ public class User extends AbstractUser implements Iterable<Message> {
     // Methods related to the getters
 
     /**
-     * Call this method the clear any existing feed and thus prevent further updating of that feed.
+     * Call this method the clear any existing messages and thus prevent further updating of that messages.
      */
     public void clearFeed() {
         this.feedVisitor = null;

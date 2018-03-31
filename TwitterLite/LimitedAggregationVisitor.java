@@ -1,10 +1,11 @@
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
- * Aggregation visitor that functions like a SimpleAggregationVisitor but limits the feed to a set
+ * Aggregation visitor that functions like a SimpleAggregationVisitor but limits the messages to a set
  * number until it is requested, then it functions exactly as a SimpleAggregationVisitor
  */
 public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
@@ -12,7 +13,7 @@ public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
     protected int count = 0;
     protected Message cut = null;
     protected final Queue<Message> recent;
-    protected boolean feedRequested = false;
+    protected boolean messagesRequested = false;
 
     public LimitedAggregationVisitor(int limit) {
             super();
@@ -27,7 +28,7 @@ public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
 
     @Override
     protected void consider(Message message) {
-        if (feedRequested) {
+        if (messagesRequested) {
             super.consider(message);
         }
         if (count < limit) {
@@ -42,7 +43,7 @@ public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
 
     @Override
     protected void purgeUser(User user) {
-        if (feedRequested) super.purgeUser(user);
+        if (messagesRequested) super.purgeUser(user);
         else for (Iterator<Message> iterator = this.recent.iterator(); iterator.hasNext(); ) {
             Message message = iterator.next();
             if (user.equals(message.getOP())) {
@@ -53,16 +54,16 @@ public class LimitedAggregationVisitor extends SimpleAggregationVisitor {
     }
 
     /**
-     * @return Message feed as queue, most recent to least recent.
+     * @return Message messages as queue, most recent to least recent.
      */
-    public Queue<Message> getFeed() {
-        if (feedRequested) return super.getFeed();
-
+    @Override
+    public Collection<Message> getMessages() {
+        if (messagesRequested) return super.getMessages();
         else {
-            this.feedRequested = true;
-            this.feed.addAll(recent);
+            this.messagesRequested = true;
+            this.messages.addAll(recent);
 
-            return feed;
+            return messages;
         }
     }
 }
