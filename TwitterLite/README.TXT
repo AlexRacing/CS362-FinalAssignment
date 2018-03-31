@@ -9,4 +9,9 @@ PURPOSE OF PROJECT: Twitter-like desktop application
 VERSION or DATE: 1.0
 HOW TO START THIS PROJECT: Run TestDriver.java
 AUTHORS: Allan, Alex, Scott
-USER INSTRUCTIONS: Run TestDriver.java
+USER INSTRUCTIONS: Some things to note:
+    1. Open User View needs a user selected
+    2. You can doubleclick on a folder in the tree view to open it
+    3. You can also doubleclick on an opened folder to close it
+
+
