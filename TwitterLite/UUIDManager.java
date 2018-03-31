@@ -1,3 +1,6 @@
+/**
+ * Deal with and generate UUIDs
+ */
 public class UUIDManager {
     /*
      *   Singleton to generate UUIDs for whatever requests it
@@ -11,10 +14,21 @@ public class UUIDManager {
 
     private UUIDManager() { currentId = 0; }
 
+    /**
+     * Standard singleton getInstance() method
+     *
+     * @return instance of this singleton
+     */
     public static UUIDManager getInstance() {
         return instance;
     }
 
+
+    /**
+     * Generate a UUID
+     *
+     * @return UUID
+     */
     public int getNewUUID() {
         return currentId++;
     }
