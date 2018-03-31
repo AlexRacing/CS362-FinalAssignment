@@ -17,12 +17,12 @@ public class UserView implements IObserver {
     // ========================================================================
 
     private MessageAggregationVisitor feedVisitor;
-    private AbstractUser currentUser;
+    private User currentUser;
     private DefaultListModel<User> userListModel = new DefaultListModel<>();
     private DefaultListModel<Message> messageListModel = new DefaultListModel<>();
     
     public UserView(AbstractUser p_currentUser) {
-        currentUser = p_currentUser;
+        currentUser = (User) p_currentUser;
 
         userViewFrame = new JFrame(currentUser.name);
         userViewFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -103,22 +103,20 @@ public class UserView implements IObserver {
         userViewFrame.setVisible(true);
 
         // ===================== CREATE LIST OF FOLLOWERS =====================
-        userListModel.clear();
-        for(int i = 0 ; i < ((User) currentUser).getFollowing().size() ; i++)
-            userListModel.addElement(((User) currentUser).getFollowing().get(i));
+        updateFollows();
+        currentUser.attachObserver(this);
         // ====================================================================
 
         // ======================= CREATE LIST OF FEEDS =======================
-        messageListModel.clear();
 
-        feedVisitor = new FollowingAggregationFilter(((User) currentUser), new SimpleAggregationVisitor());
+        feedVisitor = new FollowingAggregationFilter(currentUser, new SimpleAggregationVisitor());
 
-        ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
+        currentUser.acceptVisitor(feedVisitor);
+        currentUser.getFollowing().forEach(feedVisitor::visit);
+
+        updateFeed();
 
         feedVisitor.attachObserver(this);
-
-        Queue<Message> feed = feedVisitor.getFeed();
-        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
 
         //feedVisitor.stopObserving(); // If done
         // ====================================================================
@@ -166,36 +164,53 @@ public class UserView implements IObserver {
 
     public class postTweetAL implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            ((User) currentUser).getFollowing().forEach(feedVisitor::visit);
-            feedVisitor.stopObserving(); // If done
-
-            ((User) currentUser).spawnMessage(tweetMessage.getText());
+            currentUser.spawnMessage(tweetMessage.getText());
         }
     }
 
     @Override
     public void update() {
-        messageListModel.clear();
-        Queue<Message> feed = feedVisitor.getFeed();
-        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        updateFollows();
+        updateFeed();
     }
 
     @Override
     public void update(IObservable source) {
+        if (source == currentUser) {
+            updateFollows();
+            currentUser.getFollowing().forEach(feedVisitor::visit);
+            updateFeed();
+        }
         if (source == feedVisitor) {
-            messageListModel.clear();
-            Queue<Message> feed = feedVisitor.getFeed();
-            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+            updateFeed();
         }
     }
 
     @Override
     public void update(IObservable source, Object content) {
-        if (source == feedVisitor) {
-            messageListModel.clear();
-            Queue<Message> feed = feedVisitor.getFeed();
-            while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+        if (source == currentUser && content instanceof User) {
+            User newUser = ((User) content);
+            userListModel.addElement(newUser);
+            newUser.acceptVisitor(feedVisitor);
+            updateFeed();
         }
+        if (source == currentUser && content instanceof Message) {
+            updateFeed();
+        }
+        if (source == feedVisitor) {
+            updateFeed();
+        }
+    }
+
+    private void updateFeed() {
+        messageListModel.clear();
+        Queue<Message> feed = feedVisitor.getFeed();
+        while (!feed.isEmpty()) messageListModel.addElement(feed.remove());
+    }
+
+    private void updateFollows() {
+        userListModel.clear();
+        currentUser.getFollowing().forEach(userListModel::addElement);
     }
 
     protected void finalize() {

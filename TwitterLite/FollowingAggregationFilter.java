@@ -11,6 +11,7 @@ public class FollowingAggregationFilter extends MessageAggregationFilter {
 
     @Override
     protected boolean shouldSkip(User user) {
-        return !this.user.getFollowing().contains(user) || this.aggregator.shouldSkip(user);
+        return (!this.user.getFollowing().contains(user) && user != this.user) ||
+               this.aggregator.shouldSkip(user);
     }
 }
